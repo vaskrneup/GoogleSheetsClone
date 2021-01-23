@@ -78,19 +78,20 @@ export class Excel {
                 break;
             }
             case 'Tab': {
-
+                // TAB will fire on focus event, which will handle rest of the logic.. but wont behave as enter !!
                 break;
             }
         }
     }
 
-    focusCurrentCell = () => {
-        this.activeCell.focus();
-    }
+    focusCurrentCell = () => this.activeCell.focus();
 
-    blurLastCell = () => {
-        this.lastCell.blur();
-    }
+    focusLastCell = () => this.lastCell.focus();
+
+    blurCurrentCell = () => this.activeCell.blur();
+
+    blurLastCell = () => this.lastCell.blur();
+
 
     showActiveCell = () => {
         this.lastCell.classList.remove('active-cell');
@@ -184,8 +185,7 @@ export class Excel {
         this.lastCell = this.grid[this.activeYAxis][this.activeXAxis].cell;
         this.activeCell = this.grid[this.activeYAxis][this.activeXAxis].cell;
 
-        // this.focusActiveCell();
-        // this.handleCellPositionChange();
+        this.showActiveCell();
     }
     // END RENDERING DOM OBJECTS !!
 }
