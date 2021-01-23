@@ -99,17 +99,20 @@ export class Excel {
     }
 
     changeCell = (newX, newY) => {
-        this.lastCell = this.grid[this.activeYAxis][this.activeXAxis].cell;
-        this.lastActiveXAxis = this.activeXAxis;
-        this.lastActiveYAxis = this.activeYAxis;
+        if (!this.isEditing) {
+            this.lastCell = this.grid[this.activeYAxis][this.activeXAxis].cell;
+            this.lastActiveXAxis = this.activeXAxis;
+            this.lastActiveYAxis = this.activeYAxis;
 
-        this.activeCell = this.grid[newY][newX].cell;
-        this.activeXAxis = newX;
-        this.activeYAxis = newY;
+            this.activeCell = this.grid[newY][newX].cell;
+            this.activeXAxis = newX;
+            this.activeYAxis = newY;
+        }
     }
 
     // HANDLE EVENTS !!
     handleCellClick = (e) => {
+        this.isEditing = false;
         this.changeCell(e.detail.xAxis, e.detail.yAxis);
         this.showActiveCell();
     }
