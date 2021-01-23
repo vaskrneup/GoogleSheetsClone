@@ -20,7 +20,50 @@ export class Excel {
         this.activeXAxis = 0;
         this.activeYAxis = 0;
 
+        this.isEditing = false;
+
         this.addEventListeners();
+    }
+
+    handleKeyPress = (e) => {
+        switch (e.code) {
+            case 'ArrowUp': {
+                this.activeYAxis = this.activeYAxis !== 0 ? this.activeYAxis - 1 : this.activeYAxis;
+                this.handleCellPositionChange();
+                break;
+            }
+            case 'ArrowDown': {
+                this.activeYAxis = this.activeYAxis + 1 !== this.numberOfRows ? this.activeYAxis + 1 : this.activeYAxis;
+                this.handleCellPositionChange();
+                break;
+            }
+
+            case 'ArrowRight': {
+                this.activeXAxis = this.activeXAxis + 1 !== this.numberOfColumns ? this.activeXAxis + 1 : this.activeXAxis;
+                this.handleCellPositionChange();
+                break;
+            }
+            case 'ArrowLeft': {
+                this.activeXAxis = this.activeXAxis !== 0 ? this.activeXAxis - 1 : this.activeXAxis;
+                this.handleCellPositionChange();
+                break;
+            }
+            case 'Enter': {
+                this.isEditing = !this.isEditing;
+                break;
+            }
+            case 'Tab': {
+                break;
+            }
+            default: {
+                
+            }
+        }
+    }
+
+    changeActiveCellPosition = (x, y) => {
+        this.activeXAxis = x;
+        this.activeYAxis = y;
     }
 
     focusActiveCellNavbar = () => {
@@ -32,72 +75,46 @@ export class Excel {
 
         if (this.lastActiveXAxis !== this.activeXAxis) document.getElementById('col-' + this.lastActiveXAxis).classList.remove('active-excel-navbar');
         if (this.lastActiveYAxis !== this.activeYAxis) document.getElementById('row-' + this.lastActiveYAxis).classList.remove('active-excel-navbar');
+    }
+
+    changeActiveCellStyles = () => {
+        this.grid[this.activeYAxis][this.activeXAxis].cell.classList.add('active-cell');
+
+        if ((this.lastActiveXAxis !== this.activeXAxis) || (this.lastActiveYAxis !== this.activeYAxis)) {
+            this.grid[this.lastActiveYAxis][this.lastActiveXAxis].cell.classList.remove('active-cell');
+        }
+    }
+
+    blurActiveCell = () => {
+        this.grid[this.activeYAxis][this.activeXAxis].cell.blur();
+    }
+
+    focusActiveCell = () => {
+        this.grid[this.activeYAxis][this.activeXAxis].cell.focus();
+    }
+
+    focusOrBlurActiveCell = () => {
+        this.isEditing ? this.blurActiveCell() : this.focusActiveCell();
+    }
+
+    handleCellPositionChange = () => {
+        this.focusActiveCellNavbar();
+        this.changeActiveCellStyles();
 
         this.lastActiveXAxis = this.activeXAxis;
         this.lastActiveYAxis = this.activeYAxis;
     }
 
-    focusActiveCell = () => {
-        this.grid[this.activeYAxis][this.activeXAxis].cell.focus();
-
-        // TODO: MUST BE IN BETTER PLACE !!
-        this.focusActiveCellNavbar();
-    }
-
-    changeActiveCell = (x, y) => {
-        this.activeXAxis = x;
-        this.activeYAxis = y;
-
-        // TODO: MUST BE IN BETTER PLACE !!
-        this.focusActiveCellNavbar();
-    }
-
-    handleKeyPress = (e) => {
-        switch (e.code) {
-            case 'ArrowUp': {
-                this.activeYAxis = this.activeYAxis !== 0 ? this.activeYAxis - 1 : this.activeYAxis;
-                this.focusActiveCell();
-                break;
-            }
-            case 'ArrowDown': {
-                this.activeYAxis = this.activeYAxis + 1 !== this.numberOfRows ? this.activeYAxis + 1 : this.activeYAxis;
-                this.focusActiveCell();
-                break;
-            }
-
-            case 'ArrowRight': {
-                this.activeXAxis = this.activeXAxis + 1 !== this.numberOfColumns ? this.activeXAxis + 1 : this.activeXAxis;
-                this.focusActiveCell();
-                break;
-            }
-            case 'ArrowLeft': {
-                this.activeXAxis = this.activeXAxis !== 0 ? this.activeXAxis - 1 : this.activeXAxis;
-                this.focusActiveCell();
-                break;
-            }
-            case 'Enter': {
-
-                break;
-            }
-            case 'Tab': {
-
-                break;
-            }
-            default: {
-
-            }
-        }
-    }
-
-    handleCellChangedPosition = (e) => {
-        this.changeActiveCell(e.detail.xAxis, e.detail.yAxis)
-    }
-
     addEventListeners = () => {
         document.addEventListener('keydown', this.handleKeyPress);
-        document.addEventListener('cellChangedPosition', this.handleCellChangedPosition);
+        document.addEventListener('cellChangedPosition', (e) => {
+            this.changeActiveCellPosition(e.detail.xAxis, e.detail.yAxis);
+            this.handleCellPositionChange();
+        });
     }
 
+    // =================================================================================================================
+    // CREATING DOM OBJECTS !!
     getTableHead = () => {
         let tHead = '';
 
@@ -119,11 +136,13 @@ export class Excel {
             this.grid.push(row);
         }
     }
+    // END CREATE DOM OBJECTS !!
 
+    // RENDERING DOM OBJECTS !!
     renderTable = () => {
         this.tableContainer.innerHTML = `
             <table>
-                <thead class="table-head" style="position:sticky;">
+                <thead class="table-head">
                     <tr>
                         <th class="disabled"></th>
                         ${this.getTableHead()}
@@ -157,6 +176,8 @@ export class Excel {
         this.createRowsAndColumns();
         this.renderCells();
 
-        this.focusActiveCell();
+        // this.focusActiveCell();
+        this.handleCellPositionChange();
     }
+    // END RENDERING DOM OBJECTS !!
 }
