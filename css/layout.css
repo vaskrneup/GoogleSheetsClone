@@ -2,9 +2,9 @@
     text-align: center;
 }
 
-.numeric-text {
-    text-align: right;
-}
+/*.numeric-text {*/
+/*    text-align: right;*/
+/*}*/
 
 th {
     position: sticky;

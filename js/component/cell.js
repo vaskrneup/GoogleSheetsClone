@@ -21,6 +21,12 @@ export class Cell extends BaseComponent {
         this.addEventListeners();
     }
 
+    compileStyles = () => {
+        Object.keys(this.styles).forEach(style => {
+            this.cell.style[style] = this.styles[style];
+        });
+    }
+
     setDefaultStyles = () => {
         this.addStyles({
             minHeight: '20px',
@@ -32,12 +38,14 @@ export class Cell extends BaseComponent {
         const currentValueAsNumber = Number(e.target.value);
 
         if (currentValueAsNumber) {
-            this.cell.classList.add('numeric-text');
+            this.addStyles({textAlign: 'right'})
             this.value = currentValueAsNumber;
         } else {
             this.value = e.target.value;
-            this.cell.classList.remove('numeric-text');
+            this.removeStyles(['textAlign'])
         }
+
+        this.compileStyles();
     }
 
     addEventListeners = () => {
@@ -50,8 +58,6 @@ export class Cell extends BaseComponent {
 
         this.cell.id = this.xAxis + this.yAxis;
         this.cell.classList.add('cell');
-        Object.keys(this.styles).forEach(style => {
-            this.cell.style[style] = this.styles[style];
-        });
+        this.compileStyles();
     }
 }
