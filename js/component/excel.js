@@ -33,7 +33,7 @@ export class Excel {
                     this.activeYAxis !== 0 ? this.activeYAxis - 1 : this.activeYAxis
                 );
                 this.showActiveCell();
-
+                this.blurLastCell();
                 break;
             }
             case 'ArrowDown': {
@@ -42,7 +42,7 @@ export class Excel {
                     this.activeYAxis + 1 !== this.numberOfRows ? this.activeYAxis + 1 : this.activeYAxis
                 );
                 this.showActiveCell();
-
+                this.blurLastCell();
                 break;
             }
 
@@ -52,6 +52,7 @@ export class Excel {
                     this.activeYAxis
                 );
                 this.showActiveCell();
+                this.blurLastCell();
                 break;
             }
             case 'ArrowLeft': {
@@ -60,12 +61,20 @@ export class Excel {
                     this.activeYAxis
                 );
                 this.showActiveCell();
-
+                this.blurLastCell();
                 break;
             }
 
             case 'Enter': {
-
+                if (!this.isEditing) {
+                    this.isEditing = true;
+                    this.focusCurrentCell();
+                } else {
+                    this.isEditing = false;
+                    this.changeCell(this.activeXAxis, this.activeYAxis + 1);
+                    this.showActiveCell();
+                    this.blurLastCell();
+                }
                 break;
             }
             case 'Tab': {
@@ -75,7 +84,7 @@ export class Excel {
         }
     }
 
-    focusCurrentElement = () => {
+    focusCurrentCell = () => {
         this.activeCell.focus();
     }
 
@@ -86,7 +95,6 @@ export class Excel {
     showActiveCell = () => {
         this.lastCell.classList.remove('active-cell');
         this.activeCell.classList.add('active-cell');
-        this.blurLastCell();
     }
 
     changeCell = (newX, newY) => {
