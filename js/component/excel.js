@@ -28,89 +28,86 @@ export class Excel {
     handleKeyPress = (e) => {
         switch (e.code) {
             case 'ArrowUp': {
-                this.activeYAxis = this.activeYAxis !== 0 ? this.activeYAxis - 1 : this.activeYAxis;
-                this.handleCellPositionChange();
+                this.changeCell(
+                    this.activeXAxis,
+                    this.activeYAxis !== 0 ? this.activeYAxis - 1 : this.activeYAxis
+                );
+                this.showActiveCell();
+
                 break;
             }
             case 'ArrowDown': {
-                this.activeYAxis = this.activeYAxis + 1 !== this.numberOfRows ? this.activeYAxis + 1 : this.activeYAxis;
-                this.handleCellPositionChange();
+                this.changeCell(
+                    this.activeXAxis,
+                    this.activeYAxis + 1 !== this.numberOfRows ? this.activeYAxis + 1 : this.activeYAxis
+                );
+                this.showActiveCell();
+
                 break;
             }
 
             case 'ArrowRight': {
-                this.activeXAxis = this.activeXAxis + 1 !== this.numberOfColumns ? this.activeXAxis + 1 : this.activeXAxis;
-                this.handleCellPositionChange();
+                this.changeCell(
+                    this.activeXAxis + 1 !== this.numberOfColumns ? this.activeXAxis + 1 : this.activeXAxis,
+                    this.activeYAxis
+                );
+                this.showActiveCell();
                 break;
             }
             case 'ArrowLeft': {
-                this.activeXAxis = this.activeXAxis !== 0 ? this.activeXAxis - 1 : this.activeXAxis;
-                this.handleCellPositionChange();
+                this.changeCell(
+                    this.activeXAxis !== 0 ? this.activeXAxis - 1 : this.activeXAxis,
+                    this.activeYAxis
+                );
+                this.showActiveCell();
+
                 break;
             }
+
             case 'Enter': {
-                this.isEditing = !this.isEditing;
+
                 break;
             }
             case 'Tab': {
+
                 break;
             }
-            default: {
-                
-            }
         }
     }
 
-    changeActiveCellPosition = (x, y) => {
-        this.activeXAxis = x;
-        this.activeYAxis = y;
+    focusCurrentElement = () => {
+        this.activeCell.focus();
     }
 
-    focusActiveCellNavbar = () => {
-        const activeCol = document.getElementById('col-' + this.activeXAxis);
-        const activeRow = document.getElementById('row-' + this.activeYAxis);
-
-        activeCol.classList.add('active-excel-navbar');
-        activeRow.classList.add('active-excel-navbar');
-
-        if (this.lastActiveXAxis !== this.activeXAxis) document.getElementById('col-' + this.lastActiveXAxis).classList.remove('active-excel-navbar');
-        if (this.lastActiveYAxis !== this.activeYAxis) document.getElementById('row-' + this.lastActiveYAxis).classList.remove('active-excel-navbar');
+    blurLastCell = () => {
+        this.lastCell.blur();
     }
 
-    changeActiveCellStyles = () => {
-        this.grid[this.activeYAxis][this.activeXAxis].cell.classList.add('active-cell');
-
-        if ((this.lastActiveXAxis !== this.activeXAxis) || (this.lastActiveYAxis !== this.activeYAxis)) {
-            this.grid[this.lastActiveYAxis][this.lastActiveXAxis].cell.classList.remove('active-cell');
-        }
+    showActiveCell = () => {
+        this.lastCell.classList.remove('active-cell');
+        this.activeCell.classList.add('active-cell');
+        this.blurLastCell();
     }
 
-    blurActiveCell = () => {
-        this.grid[this.activeYAxis][this.activeXAxis].cell.blur();
-    }
-
-    focusActiveCell = () => {
-        this.grid[this.activeYAxis][this.activeXAxis].cell.focus();
-    }
-
-    focusOrBlurActiveCell = () => {
-        this.isEditing ? this.blurActiveCell() : this.focusActiveCell();
-    }
-
-    handleCellPositionChange = () => {
-        this.focusActiveCellNavbar();
-        this.changeActiveCellStyles();
-
+    changeCell = (newX, newY) => {
+        this.lastCell = this.grid[this.activeYAxis][this.activeXAxis].cell;
         this.lastActiveXAxis = this.activeXAxis;
         this.lastActiveYAxis = this.activeYAxis;
+
+        this.activeCell = this.grid[newY][newX].cell;
+        this.activeXAxis = newX;
+        this.activeYAxis = newY;
+    }
+
+    // HANDLE EVENTS !!
+    handleCellClick = (e) => {
+        this.changeCell(e.detail.xAxis, e.detail.yAxis);
+        this.showActiveCell();
     }
 
     addEventListeners = () => {
         document.addEventListener('keydown', this.handleKeyPress);
-        document.addEventListener('cellChangedPosition', (e) => {
-            this.changeActiveCellPosition(e.detail.xAxis, e.detail.yAxis);
-            this.handleCellPositionChange();
-        });
+        document.addEventListener('cellChangedPosition', this.handleCellClick);
     }
 
     // =================================================================================================================
@@ -176,8 +173,11 @@ export class Excel {
         this.createRowsAndColumns();
         this.renderCells();
 
+        this.lastCell = this.grid[this.activeYAxis][this.activeXAxis].cell;
+        this.activeCell = this.grid[this.activeYAxis][this.activeXAxis].cell;
+
         // this.focusActiveCell();
-        this.handleCellPositionChange();
+        // this.handleCellPositionChange();
     }
     // END RENDERING DOM OBJECTS !!
 }
