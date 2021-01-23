@@ -5,3 +5,13 @@
 .numeric-text {
     text-align: right;
 }
+
+th {
+    position: sticky;
+    top: 0;
+}
+
+.table-row {
+    position: sticky;
+    left: 0;
+}

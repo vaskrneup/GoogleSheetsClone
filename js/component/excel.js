@@ -123,7 +123,7 @@ export class Excel {
     renderTable = () => {
         this.tableContainer.innerHTML = `
             <table>
-                <thead class="table-head">
+                <thead class="table-head" style="position:sticky;">
                     <tr>
                         <th class="disabled"></th>
                         ${this.getTableHead()}
@@ -139,7 +139,7 @@ export class Excel {
     renderCells = () => {
         this.grid.forEach((row, i) => {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td class="disabled center-text" id="row-${i}">${i + 1}</td>`;
+            tr.innerHTML = `<td class="disabled center-text table-row" id="row-${i}">${i + 1}</td>`;
 
             row.forEach(cell => {
                 this.tbody.appendChild(tr);
