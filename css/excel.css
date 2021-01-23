@@ -3,7 +3,9 @@
 }
 
 .active-cell {
-    background-color: red;
+    outline: 1px outset blue;
+    background-color: #f3f3f3;
+    border-collapse: collapse;
 }
 
 .active-excel-navbar {
