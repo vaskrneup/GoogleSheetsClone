@@ -11,21 +11,31 @@ export class Cell extends BaseComponent {
 
         this.value = '';
 
+        this.positionChangeEvent = new CustomEvent('cellChangedPosition', {
+            detail: {
+                xAxis: this.xAxis,
+                yAxis: this.yAxis
+            }
+        });
+
         this.addEventListeners();
     }
 
     classifyAsTextOrNot = (e) => {
         const currentValueAsNumber = Number(e.target.value);
+
         if (currentValueAsNumber) {
             this.cell.classList.add('numeric-text');
             this.value = currentValueAsNumber;
         } else {
             this.value = e.target.value;
+            this.cell.classList.remove('numeric-text');
         }
     }
 
     addEventListeners = () => {
-        this.cell.addEventListener('change', this.classifyAsTextOrNot)
+        this.cell.addEventListener('change', this.classifyAsTextOrNot);
+        this.cell.addEventListener('focus', () => document.dispatchEvent(this.positionChangeEvent));
     }
 
     render = () => {

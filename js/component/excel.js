@@ -57,8 +57,13 @@ export class Excel {
         }
     }
 
+    handleCellChangedPosition = (e) => {
+        this.changeActiveCell(e.detail.xAxis, e.detail.yAxis)
+    }
+
     addEventListeners = () => {
         document.addEventListener('keydown', this.handleKeyPress);
+        document.addEventListener('cellChangedPosition', this.handleCellChangedPosition);
     }
 
     getTableHead = () => {
