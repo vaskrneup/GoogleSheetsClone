@@ -14,14 +14,25 @@ export class Excel {
 
         this.grid = [];
 
+        this.lastActiveXAxis = 0;
+        this.lastActiveYAxis = 0;
+
         this.activeXAxis = 0;
         this.activeYAxis = 0;
 
         this.addEventListeners();
     }
 
+    focusActiveCellNavbar = () => {
+        const activeRow = document.getElementById('col-' + this.activeXAxis);
+        console.log(activeRow)
+    }
+
     focusActiveCell = () => {
-        this.grid[this.activeXAxis][this.activeYAxis].cell.focus();
+        this.grid[this.activeYAxis][this.activeXAxis].cell.focus();
+
+        // TODO: MUST BE IN BETTER PLACE !!
+        this.focusActiveCellNavbar();
     }
 
     changeActiveCell = (x, y) => {
@@ -32,22 +43,23 @@ export class Excel {
     handleKeyPress = (e) => {
         switch (e.code) {
             case 'ArrowUp': {
-                this.activeXAxis = this.activeXAxis !== 0 ? this.activeXAxis - 1 : this.activeXAxis;
+                this.activeYAxis = this.activeYAxis !== 0 ? this.activeYAxis - 1 : this.activeYAxis;
                 this.focusActiveCell();
                 break;
             }
             case 'ArrowDown': {
-                this.activeXAxis = this.activeXAxis + 1 !== this.numberOfRows ? this.activeXAxis + 1 : this.activeXAxis;
+                this.activeYAxis = this.activeYAxis + 1 !== this.numberOfRows ? this.activeYAxis + 1 : this.activeYAxis;
                 this.focusActiveCell();
                 break;
             }
+
             case 'ArrowRight': {
-                this.activeYAxis = this.activeYAxis + 1 !== this.numberOfColumns ? this.activeYAxis + 1 : this.activeYAxis;
+                this.activeXAxis = this.activeXAxis + 1 !== this.numberOfColumns ? this.activeXAxis + 1 : this.activeXAxis;
                 this.focusActiveCell();
                 break;
             }
             case 'ArrowLeft': {
-                this.activeYAxis = this.activeYAxis !== 0 ? this.activeYAxis - 1 : this.activeYAxis;
+                this.activeXAxis = this.activeXAxis !== 0 ? this.activeXAxis - 1 : this.activeXAxis;
                 this.focusActiveCell();
                 break;
             }
@@ -78,7 +90,7 @@ export class Excel {
         let tHead = '';
 
         for (let i = 0; i < this.numberOfColumns; i++) {
-            tHead += `<th class="disabled">${this.LETTERS[i]}</th>`;
+            tHead += `<th class="disabled" id="col-${i}">${this.LETTERS[i]}</th>`;
         }
 
         return tHead;
@@ -89,7 +101,7 @@ export class Excel {
             const row = [];
 
             for (let col_count = 0; col_count < this.numberOfColumns; col_count++) {
-                row.push(new Cell(row_count, col_count));
+                row.push(new Cell(col_count, row_count));
             }
 
             this.grid.push(row);
