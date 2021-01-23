@@ -10,6 +10,22 @@ export class Cell extends BaseComponent {
         this.yAxis = yAxis;
 
         this.value = '';
+
+        this.addEventListeners();
+    }
+
+    classifyAsTextOrNot = (e) => {
+        const currentValueAsNumber = Number(e.target.value);
+        if (currentValueAsNumber) {
+            this.cell.classList.add('numeric-text');
+            this.value = currentValueAsNumber;
+        } else {
+            this.value = e.target.value;
+        }
+    }
+
+    addEventListeners = () => {
+        this.cell.addEventListener('change', this.classifyAsTextOrNot)
     }
 
     render = () => {
@@ -17,6 +33,6 @@ export class Cell extends BaseComponent {
         this.cell.classList.add('cell');
         Object.keys(this.styles).forEach(style => {
             this.cell.style[style] = this.styles[style];
-        })
+        });
     }
 }
