@@ -126,28 +126,28 @@ export class Excel {
     // END CELL NAVBAR RELATED !!
 
     // CELL RELATED !!
-    focusCurrentCell = () => this.activeCell.focus();
+    focusCurrentCell = () => this.activeCell.cell.focus();
 
-    blurLastCell = () => this.lastCell.blur();
+    blurLastCell = () => this.lastCell.cell.blur();
 
 
     showActiveCell = () => {
-        this.lastCell.classList.remove('active-cell');
-        this.activeCell.classList.add('active-cell');
+        this.lastCell.cell.classList.remove('active-cell');
+        this.activeCell.cell.classList.add('active-cell');
     }
 
     changeCell = (newX, newY) => {
         if (!this.isEditing) {
             if (!((newX < 0) || (newX >= this.numberOfColumns) || (newY < 0) || (newY >= this.numberOfRows))) {
-                this.lastCell = this.grid[this.activeYAxis][this.activeXAxis].cell;
+                this.lastCell = this.grid[this.activeYAxis][this.activeXAxis];
                 this.lastActiveXAxis = this.activeXAxis;
                 this.lastActiveYAxis = this.activeYAxis;
 
-                this.activeCell = this.grid[newY][newX].cell;
+                this.activeCell = this.grid[newY][newX];
                 this.activeXAxis = newX;
                 this.activeYAxis = newY;
 
-                this.activeCell.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});
+                this.activeCell.cell.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});
                 this.showActiveNavbar();
             }
         }
@@ -228,8 +228,8 @@ export class Excel {
         this.createRowsAndColumns();
         this.renderCells();
 
-        this.lastCell = this.grid[this.activeYAxis][this.activeXAxis].cell;
-        this.activeCell = this.grid[this.activeYAxis][this.activeXAxis].cell;
+        this.lastCell = this.grid[this.activeYAxis][this.activeXAxis];
+        this.activeCell = this.grid[this.activeYAxis][this.activeXAxis];
 
         this.showActiveCell();
         this.showActiveNavbar();
