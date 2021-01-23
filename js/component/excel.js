@@ -13,6 +13,52 @@ export class Excel {
         this.tbody = this.tableContainer.querySelector('tbody');
 
         this.grid = [];
+
+        this.activeXAxis = 0;
+        this.activeYAxis = 0;
+
+        this.addEventListeners();
+    }
+
+    focusActiveCell = () => {
+        this.grid[this.activeXAxis][this.activeYAxis].cell.focus();
+    }
+
+    changeActiveCell = (x, y) => {
+        this.activeXAxis = x;
+        this.activeYAxis = y;
+    }
+
+    handleKeyPress = (e) => {
+        switch (e.code) {
+            case 'ArrowUp': {
+                this.activeXAxis = this.activeXAxis !== 0 ? this.activeXAxis - 1 : this.activeXAxis;
+                this.focusActiveCell();
+                break;
+            }
+            case 'ArrowDown': {
+                this.activeXAxis = this.activeXAxis + 1 !== this.numberOfRows ? this.activeXAxis + 1 : this.activeXAxis;
+                this.focusActiveCell();
+                break;
+            }
+            case 'ArrowRight': {
+                this.activeYAxis = this.activeYAxis + 1 !== this.numberOfColumns ? this.activeYAxis + 1 : this.activeYAxis;
+                this.focusActiveCell();
+                break;
+            }
+            case 'ArrowLeft': {
+                this.activeYAxis = this.activeYAxis !== 0 ? this.activeYAxis - 1 : this.activeYAxis;
+                this.focusActiveCell();
+                break;
+            }
+            default: {
+
+            }
+        }
+    }
+
+    addEventListeners = () => {
+        document.addEventListener('keydown', this.handleKeyPress);
     }
 
     getTableHead = () => {
@@ -63,7 +109,7 @@ export class Excel {
                 const td = document.createElement('td');
 
                 tr.appendChild(td);
-                
+
                 cell.render();
                 td.appendChild(cell.cell);
             })
