@@ -82,7 +82,7 @@ export class Excel {
             }
             case 'Tab': {
                 e.preventDefault();
-                
+
                 this.isEditing = false;
 
                 if (e.shiftKey) this.changeCell(this.activeXAxis - 1, this.activeYAxis);
@@ -96,6 +96,21 @@ export class Excel {
         }
     }
 
+    // CELL NAVBAR RELATED !!
+    showActiveNavbar = () => {
+        document.getElementById('col-' + this.activeXAxis).classList.add('active-excel-navbar');
+        document.getElementById('row-' + this.activeYAxis).classList.add('active-excel-navbar');
+
+        if (this.lastActiveXAxis !== this.activeXAxis) {
+            document.getElementById('col-' + this.lastActiveXAxis).classList.remove('active-excel-navbar');
+        }
+        if (this.lastActiveYAxis !== this.activeYAxis) {
+            document.getElementById('row-' + this.lastActiveYAxis).classList.remove('active-excel-navbar');
+        }
+    }
+    // END CELL NAVBAR RELATED !!
+
+    // CELL RELATED !!
     focusCurrentCell = () => this.activeCell.focus();
 
     focusLastCell = () => this.lastCell.focus();
@@ -119,8 +134,11 @@ export class Excel {
             this.activeCell = this.grid[newY][newX].cell;
             this.activeXAxis = newX;
             this.activeYAxis = newY;
+
+            this.showActiveNavbar();
         }
     }
+    // END CELL RELATED !!
 
     // HANDLE EVENTS !!
     handleCellClick = (e) => {
@@ -200,6 +218,7 @@ export class Excel {
         this.activeCell = this.grid[this.activeYAxis][this.activeXAxis].cell;
 
         this.showActiveCell();
+        this.showActiveNavbar();
     }
     // END RENDERING DOM OBJECTS !!
 }
