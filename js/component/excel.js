@@ -71,14 +71,26 @@ export class Excel {
                     this.focusCurrentCell();
                 } else {
                     this.isEditing = false;
-                    this.changeCell(this.activeXAxis, this.activeYAxis + 1);
+
+                    if (e.shiftKey) this.changeCell(this.activeXAxis, this.activeYAxis - 1);
+                    else this.changeCell(this.activeXAxis, this.activeYAxis + 1);
+
                     this.showActiveCell();
                     this.blurLastCell();
                 }
                 break;
             }
             case 'Tab': {
-                // TAB will fire on focus event, which will handle rest of the logic.. but wont behave as enter !!
+                e.preventDefault();
+                
+                this.isEditing = false;
+
+                if (e.shiftKey) this.changeCell(this.activeXAxis - 1, this.activeYAxis);
+                else this.changeCell(this.activeXAxis + 1, this.activeYAxis);
+
+                this.showActiveCell();
+                this.blurLastCell();
+
                 break;
             }
         }
@@ -112,7 +124,6 @@ export class Excel {
 
     // HANDLE EVENTS !!
     handleCellClick = (e) => {
-        this.isEditing = false;
         this.changeCell(e.detail.xAxis, e.detail.yAxis);
         this.showActiveCell();
     }
