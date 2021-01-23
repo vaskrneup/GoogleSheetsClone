@@ -30,7 +30,7 @@ export class Excel {
             case 'ArrowUp': {
                 this.changeCell(
                     this.activeXAxis,
-                    this.activeYAxis !== 0 ? this.activeYAxis - 1 : this.activeYAxis
+                    this.activeYAxis - 1
                 );
                 this.showActiveCell();
                 this.blurLastCell();
@@ -39,7 +39,7 @@ export class Excel {
             case 'ArrowDown': {
                 this.changeCell(
                     this.activeXAxis,
-                    this.activeYAxis + 1 !== this.numberOfRows ? this.activeYAxis + 1 : this.activeYAxis
+                    this.activeYAxis + 1
                 );
                 this.showActiveCell();
                 this.blurLastCell();
@@ -48,7 +48,7 @@ export class Excel {
 
             case 'ArrowRight': {
                 this.changeCell(
-                    this.activeXAxis + 1 !== this.numberOfColumns ? this.activeXAxis + 1 : this.activeXAxis,
+                    this.activeXAxis + 1,
                     this.activeYAxis
                 );
                 this.showActiveCell();
@@ -57,7 +57,7 @@ export class Excel {
             }
             case 'ArrowLeft': {
                 this.changeCell(
-                    this.activeXAxis !== 0 ? this.activeXAxis - 1 : this.activeXAxis,
+                    this.activeXAxis - 1,
                     this.activeYAxis
                 );
                 this.showActiveCell();
@@ -130,15 +130,17 @@ export class Excel {
 
     changeCell = (newX, newY) => {
         if (!this.isEditing) {
-            this.lastCell = this.grid[this.activeYAxis][this.activeXAxis].cell;
-            this.lastActiveXAxis = this.activeXAxis;
-            this.lastActiveYAxis = this.activeYAxis;
+            if (!((newX < 0) || (newX >= this.numberOfColumns) || (newY < 0) || (newY >= this.numberOfRows))) {
+                this.lastCell = this.grid[this.activeYAxis][this.activeXAxis].cell;
+                this.lastActiveXAxis = this.activeXAxis;
+                this.lastActiveYAxis = this.activeYAxis;
 
-            this.activeCell = this.grid[newY][newX].cell;
-            this.activeXAxis = newX;
-            this.activeYAxis = newY;
+                this.activeCell = this.grid[newY][newX].cell;
+                this.activeXAxis = newX;
+                this.activeYAxis = newY;
 
-            this.showActiveNavbar();
+                this.showActiveNavbar();
+            }
         }
     }
     // END CELL RELATED !!
