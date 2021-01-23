@@ -28,6 +28,8 @@ export class Excel {
     handleKeyPress = (e) => {
         switch (e.code) {
             case 'ArrowUp': {
+                e.preventDefault();
+
                 this.changeCell(
                     this.activeXAxis,
                     this.activeYAxis - 1
@@ -37,6 +39,8 @@ export class Excel {
                 break;
             }
             case 'ArrowDown': {
+                e.preventDefault();
+
                 this.changeCell(
                     this.activeXAxis,
                     this.activeYAxis + 1
@@ -47,6 +51,8 @@ export class Excel {
             }
 
             case 'ArrowRight': {
+                e.preventDefault();
+
                 this.changeCell(
                     this.activeXAxis + 1,
                     this.activeYAxis
@@ -56,6 +62,8 @@ export class Excel {
                 break;
             }
             case 'ArrowLeft': {
+                e.preventDefault();
+
                 this.changeCell(
                     this.activeXAxis - 1,
                     this.activeYAxis
@@ -139,6 +147,7 @@ export class Excel {
                 this.activeXAxis = newX;
                 this.activeYAxis = newY;
 
+                this.activeCell.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});
                 this.showActiveNavbar();
             }
         }
