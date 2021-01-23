@@ -21,6 +21,13 @@ export class Cell extends BaseComponent {
         this.addEventListeners();
     }
 
+    setDefaultStyles = () => {
+        this.addStyles({
+            minHeight: '20px',
+            fontSize: '16px'
+        })
+    }
+
     classifyAsTextOrNot = (e) => {
         const currentValueAsNumber = Number(e.target.value);
 
@@ -39,6 +46,8 @@ export class Cell extends BaseComponent {
     }
 
     render = () => {
+        this.setDefaultStyles();
+
         this.cell.id = this.xAxis + this.yAxis;
         this.cell.classList.add('cell');
         Object.keys(this.styles).forEach(style => {

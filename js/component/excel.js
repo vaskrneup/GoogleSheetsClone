@@ -51,6 +51,14 @@ export class Excel {
                 this.focusActiveCell();
                 break;
             }
+            case 'Enter': {
+
+                break;
+            }
+            case 'Tab': {
+
+                break;
+            }
             default: {
 
             }
@@ -70,7 +78,7 @@ export class Excel {
         let tHead = '';
 
         for (let i = 0; i < this.numberOfColumns; i++) {
-            tHead += `<th>${this.LETTERS[i]}</th>`;
+            tHead += `<th class="disabled">${this.LETTERS[i]}</th>`;
         }
 
         return tHead;
@@ -124,7 +132,7 @@ export class Excel {
     render = () => {
         this.createRowsAndColumns();
         this.renderCells();
-        
+
         this.focusActiveCell();
     }
 }
