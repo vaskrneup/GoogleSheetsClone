@@ -24,8 +24,17 @@ export class Excel {
     }
 
     focusActiveCellNavbar = () => {
-        const activeRow = document.getElementById('col-' + this.activeXAxis);
-        console.log(activeRow)
+        const activeCol = document.getElementById('col-' + this.activeXAxis);
+        const activeRow = document.getElementById('row-' + this.activeYAxis);
+
+        activeCol.classList.add('active-excel-navbar');
+        activeRow.classList.add('active-excel-navbar');
+
+        if (this.lastActiveXAxis !== this.activeXAxis) document.getElementById('col-' + this.lastActiveXAxis).classList.remove('active-excel-navbar');
+        if (this.lastActiveYAxis !== this.activeYAxis) document.getElementById('row-' + this.lastActiveYAxis).classList.remove('active-excel-navbar');
+
+        this.lastActiveXAxis = this.activeXAxis;
+        this.lastActiveYAxis = this.activeYAxis;
     }
 
     focusActiveCell = () => {
@@ -38,6 +47,9 @@ export class Excel {
     changeActiveCell = (x, y) => {
         this.activeXAxis = x;
         this.activeYAxis = y;
+
+        // TODO: MUST BE IN BETTER PLACE !!
+        this.focusActiveCellNavbar();
     }
 
     handleKeyPress = (e) => {
@@ -127,7 +139,7 @@ export class Excel {
     renderCells = () => {
         this.grid.forEach((row, i) => {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td class="disabled center-text">${i + 1}</td>`;
+            tr.innerHTML = `<td class="disabled center-text" id="row-${i}">${i + 1}</td>`;
 
             row.forEach(cell => {
                 this.tbody.appendChild(tr);
