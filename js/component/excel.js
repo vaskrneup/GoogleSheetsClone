@@ -124,5 +124,7 @@ export class Excel {
     render = () => {
         this.createRowsAndColumns();
         this.renderCells();
+        
+        this.focusActiveCell();
     }
 }
