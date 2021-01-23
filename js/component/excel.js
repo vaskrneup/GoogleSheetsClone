@@ -93,6 +93,13 @@ export class Excel {
 
                 break;
             }
+
+            default: {
+                if (!this.isEditing) {
+                    this.focusCurrentCell();
+                    this.isEditing = true;
+                }
+            }
         }
     }
 
