@@ -120,10 +120,6 @@ export class Excel {
     // CELL RELATED !!
     focusCurrentCell = () => this.activeCell.focus();
 
-    focusLastCell = () => this.lastCell.focus();
-
-    blurCurrentCell = () => this.activeCell.blur();
-
     blurLastCell = () => this.lastCell.blur();
 
 
