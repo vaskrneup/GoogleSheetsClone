@@ -76,7 +76,6 @@ export class Excel {
 
             case 'Enter': {
                 if (!this.isEditing) {
-                    this.isEditing = true;
                     this.focusCurrentCell();
                 } else {
                     this.isEditing = false;
@@ -157,9 +156,10 @@ export class Excel {
 
     // HANDLE EVENTS !!
     handleCellClick = (e) => {
-        // this.isEditing = true;
+        this.isEditing = false; // for saying editing has stopped in last cell !!
         this.changeCell(e.detail.xAxis, e.detail.yAxis);
         this.showActiveCell();
+        this.isEditing = true; // for saying editing has started in current cell !!
     }
 
     addEventListeners = () => {
