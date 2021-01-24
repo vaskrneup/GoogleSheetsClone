@@ -28,40 +28,48 @@ export class Excel {
     handleKeyPress = (e) => {
         switch (e.code) {
             case 'ArrowUp': {
-                this.changeCell(
-                    this.activeXAxis,
-                    this.activeYAxis - 1
-                );
-                this.showActiveCell();
-                this.blurLastCell();
+                if (!this.isEditing) {
+                    this.changeCell(
+                        this.activeXAxis,
+                        this.activeYAxis - 1
+                    );
+                    this.showActiveCell();
+                    this.blurLastCell();
+                }
                 break;
             }
             case 'ArrowDown': {
-                this.changeCell(
-                    this.activeXAxis,
-                    this.activeYAxis + 1
-                );
-                this.showActiveCell();
-                this.blurLastCell();
+                if (!this.isEditing) {
+                    this.changeCell(
+                        this.activeXAxis,
+                        this.activeYAxis + 1
+                    );
+                    this.showActiveCell();
+                    this.blurLastCell();
+                }
                 break;
             }
 
             case 'ArrowRight': {
-                this.changeCell(
-                    this.activeXAxis + 1,
-                    this.activeYAxis
-                );
-                this.showActiveCell();
-                this.blurLastCell();
+                if (!this.isEditing) {
+                    this.changeCell(
+                        this.activeXAxis + 1,
+                        this.activeYAxis
+                    );
+                    this.showActiveCell();
+                    this.blurLastCell();
+                }
                 break;
             }
             case 'ArrowLeft': {
-                this.changeCell(
-                    this.activeXAxis - 1,
-                    this.activeYAxis
-                );
-                this.showActiveCell();
-                this.blurLastCell();
+                if (!this.isEditing) {
+                    this.changeCell(
+                        this.activeXAxis - 1,
+                        this.activeYAxis
+                    );
+                    this.showActiveCell();
+                    this.blurLastCell();
+                }
                 // e.preventDefault()
                 break;
             }
@@ -149,7 +157,7 @@ export class Excel {
 
     // HANDLE EVENTS !!
     handleCellClick = (e) => {
-        this.isEditing = false;
+        // this.isEditing = true;
         this.changeCell(e.detail.xAxis, e.detail.yAxis);
         this.showActiveCell();
     }
