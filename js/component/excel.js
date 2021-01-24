@@ -8,9 +8,7 @@ export class Excel {
         this.numberOfColumns = numberOfColumns;
 
         this.tableContainer = document.getElementById(tableContainerId);
-        this.renderTable();
-
-        this.tbody = this.tableContainer.querySelector('tbody');
+        this.tbody = null;
 
         this.grid = [];
 
@@ -227,6 +225,9 @@ export class Excel {
     }
 
     render = () => {
+        this.renderTable();
+        this.tbody = this.tableContainer.querySelector('tbody');
+
         this.createRowsAndColumns();
         this.renderCells();
 
