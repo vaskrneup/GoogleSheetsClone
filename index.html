@@ -2,26 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Excel Clone</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://kit.fontawesome.com/79f2d59df5.js" crossorigin="anonymous"></script>
+
+    <title>Excel Clone</title>
+
+    <!--    <script defer src="https://use.fontawesome.com/releases/v5.15.2/js/all.js"-->
+    <!--            integrity="sha384-vuFJ2JiSdUpXLKGK+tDteQZBqNlMwAjhZ3TvPaDfN9QmbPb7Q8qUpbSNapQev3YF"-->
+    <!--            crossorigin="anonymous">-->
+    <!--    </script>-->
 
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/layout.css">
+
+    <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/excel.css">
 </head>
 <body>
 
-<!--<header>-->
-<!--    <div class="header-left">-->
-<!--        <img src="https://www.clipartmax.com/png/full/306-3063129_sheets-icon-android-lollipop-png-image-google-sheets-icon.png"-->
-<!--             alt="Sheets Logo" class="header-logo">-->
-<!--    </div>-->
+<div class="navbar">
 
-<!--    <div class="header-right">-->
+    <div class="navbar-top">
 
-<!--    </div>-->
-<!--</header>-->
+        <div class="navbar-left">
+            <div class="navbar-icon">
+                <img src="assets/icons/common/file-excel-solid.svg" alt="Page Logo">
+            </div>
+
+            <div class="navbar-current-doc-info">
+                <label>
+                    <input type="text" class="current-doc-name-input" id="current-doc-name-input"
+                           value="Untitled Spreadsheet">
+                </label>
+
+                <span class="current-doc-format">.CSV</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="navbar-between">
+
+    </div>
+
+    <div class="navbar-bottom">
+
+    </div>
+
+</div>
 
 <main>
     <div id="excel-table">

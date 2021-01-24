@@ -1,0 +1,56 @@
+.navbar {
+    overflow: hidden;
+}
+
+.navbar-top {
+    padding: 5px;
+
+    border-bottom: 1px solid grey;
+    overflow: hidden;
+}
+
+.navbar-left {
+    float: left;
+}
+
+.navbar-icon {
+    float: left;
+
+    width: 40px;
+    height: 40px;
+}
+
+.navbar-icon img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.navbar-current-doc-info {
+    padding: 10px;
+    float: left;
+}
+
+.current-doc-name-input {
+    padding: 2px;
+
+    width: 190px;
+    height: 20px;
+
+    font-size: 20px;
+}
+
+.current-doc-name-input:focus {
+    outline: 2px solid blue;
+    box-shadow: 0 0 3px 1px blue;
+}
+
+.current-doc-format {
+    font-size: 16px;
+    font-weight: bold;
+
+    color: white;
+    background-color: green;
+
+    padding: 2px;
+    border-radius: 4px;
+}
