@@ -54,3 +54,7 @@
     padding: 2px;
     border-radius: 4px;
 }
+
+.navbar-right {
+    float: right;
+}
