@@ -63,7 +63,7 @@
 
 .navbar-between {
     padding: 5px;
-    background-color: red;
+    border-bottom: 1px solid grey;
 }
 
 .cell-style-change-btn {
@@ -75,4 +75,26 @@
 
 .cell-style-change-btn:hover {
     cursor: pointer;
+}
+
+.navbar-bottom {
+    padding: 5px;
+}
+
+.current-cell {
+    padding-right: 1%;
+    border-right: 1px solid grey;
+}
+
+.fx {
+    font-style: italic;
+    padding: 0 1%;
+    margin-right: 2px;
+    font-size: 20px;
+    border-right: 1px solid grey;
+}
+
+.formula-input {
+    width: 80%;
+    font-size: 20px;
 }
