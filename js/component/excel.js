@@ -5,7 +5,7 @@ export class Excel {
 
     constructor(numberOfRows, numberOfColumns, tableContainerId,
                 backgroundColorPickerId, textColorPickerId, fontSizeInputId,
-                boldBtnId, italicBtnId, crossedFontBtnId, underlineBtnId) {
+                boldBtnId, italicBtnId, crossedFontBtnId) {
         this.numberOfRows = numberOfRows;
         this.numberOfColumns = numberOfColumns;
 
@@ -16,7 +16,6 @@ export class Excel {
         this.boldBtn = document.getElementById(boldBtnId);
         this.italicBtn = document.getElementById(italicBtnId);
         this.crossedFontBtn = document.getElementById(crossedFontBtnId);
-        this.underlineBtn = document.getElementById(underlineBtnId);
 
         this.tableContainer = document.getElementById(tableContainerId);
         this.tbody = null;
@@ -192,20 +191,26 @@ export class Excel {
         this.activeCell.compileStyles();
     }
 
-    handleItalicChange = (e) => {
-
+    handleItalicChange = () => {
+        this.activeCell.addStyles({
+            fontStyle: this.activeCell.styles.fontStyle === 'italic' ? 'normal' : 'italic',
+        });
+        this.activeCell.compileStyles();
     }
 
-    handleBoldChange = (e) => {
-
+    handleBoldChange = () => {
+        this.activeCell.addStyles({
+            fontWeight: this.activeCell.styles.fontWeight === 'bold' ? 'normal' : 'bold',
+        });
+        this.activeCell.compileStyles();
     }
 
-    handleStrikeThroughChange = (e) => {
+    handleStrikeThroughChange = () => {
+        this.activeCell.addStyles({
+            textDecoration: this.activeCell.styles.textDecoration === 'line-through' ? 'none' : 'line-through',
+        });
 
-    }
-
-    handleUnderlineChange = (e) => {
-
+        this.activeCell.compileStyles();
     }
 
     addEventListeners = () => {
@@ -213,10 +218,9 @@ export class Excel {
         this.textColorPicker.addEventListener('input', this.handleCellTextColorChange)
         this.fontSizeInput.addEventListener('input', this.handleFontSizeChange)
 
-        this.italicBtn.addEventListener('input', this.handleItalicChange)
-        this.boldBtn.addEventListener('input', this.handleBoldChange)
-        this.crossedFontBtn.addEventListener('input', this.handleStrikeThroughChange)
-        this.underlineBtn.addEventListener('input', this.handleUnderlineChange)
+        this.italicBtn.addEventListener('click', this.handleItalicChange)
+        this.boldBtn.addEventListener('click', this.handleBoldChange)
+        this.crossedFontBtn.addEventListener('click', this.handleStrikeThroughChange)
 
         document.addEventListener('keydown', this.handleKeyPress);
         document.addEventListener('cellChangedPosition', this.handleCellClick);

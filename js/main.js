@@ -17,7 +17,7 @@ const main = () => {
     const excel = new Excel(
         100, 26, 'excel-table',
         'background-color-picker', 'text-color-picker', 'font-size-input',
-        'make-text-bold', 'make-text-italic', 'make-text-strikethrough', 'make-text-underline'
+        'make-text-bold', 'make-text-italic', 'make-text-strikethrough'
     );
     excel.render()
 }
