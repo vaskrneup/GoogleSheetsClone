@@ -7,7 +7,8 @@ export class Excel {
 
     constructor(numberOfRows, numberOfColumns, tableContainerId,
                 backgroundColorPickerId, textColorPickerId, fontSizeInputId,
-                boldBtnId, italicBtnId, crossedFontBtnId) {
+                boldBtnId, italicBtnId, crossedFontBtnId,
+                currentCellDisplayId, formulaInputId) {
         this.numberOfRows = numberOfRows;
         this.numberOfColumns = numberOfColumns;
 
@@ -18,6 +19,9 @@ export class Excel {
         this.boldBtn = document.getElementById(boldBtnId);
         this.italicBtn = document.getElementById(italicBtnId);
         this.crossedFontBtn = document.getElementById(crossedFontBtnId);
+
+        this.currentCellDisplay = document.getElementById(currentCellDisplayId);
+        this.formulaInput = document.getElementById(formulaInputId);
 
         this.tableContainer = document.getElementById(tableContainerId);
         this.tbody = null;
@@ -157,6 +161,8 @@ export class Excel {
 
                 this.activeCell.cell.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});
                 this.showActiveNavbar();
+
+                this.currentCellDisplay.innerText = this.LETTERS[this.activeXAxis] + (this.activeYAxis + 1);
             }
         }
     }
