@@ -1,5 +1,5 @@
 export const parseMathSyntax = (text, operationType) => {
-    let parsedText = text.replace(('=' + operationType + '('), '').replace(')', '');
+    let parsedText = text.replace(operationType, '').replace(')', '');
     let isTwoDigitSum = null;
 
     if (parsedText.includes(':')) {
