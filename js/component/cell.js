@@ -45,7 +45,7 @@ export class Cell extends BaseComponent {
             this.value = currentValueAsNumber;
         } else {
             this.value = e.target.value;
-            this.removeStyles(['textAlign']);
+            this.addStyles({textAlign: 'left'});
         }
 
         this.compileStyles();
