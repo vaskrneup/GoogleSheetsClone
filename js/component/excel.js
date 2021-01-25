@@ -209,7 +209,6 @@ export class Excel {
         this.activeCell.addStyles({
             textDecoration: this.activeCell.styles.textDecoration === 'line-through' ? 'none' : 'line-through',
         });
-
         this.activeCell.compileStyles();
     }
 

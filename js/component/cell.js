@@ -30,7 +30,7 @@ export class Cell extends BaseComponent {
     setDefaultStyles = () => {
         this.addStyles({
             minHeight: '20px',
-            minWidth: '100%',
+            width: '300px',
             fontSize: '16px'
         })
     }
