@@ -34,7 +34,7 @@ export class Cell extends BaseComponent {
             minHeight: '20px',
             width: '300px',
             fontSize: '16px'
-        })
+        });
     }
 
     classifyAsTextOrNot = (e) => {

@@ -142,10 +142,17 @@ export class Excel {
 
     blurLastCell = () => this.lastCell.cell.blur();
 
-
     showActiveCell = () => {
         this.lastCell.cell.classList.remove('active-cell');
         this.activeCell.cell.classList.add('active-cell');
+    }
+
+    updateActiveCellDisplay = () => {
+        this.currentCellDisplay.innerText = this.LETTERS[this.activeXAxis] + (this.activeYAxis + 1);
+    }
+
+    updateFormulaBar = () => {
+        this.formulaInput.value = this.activeCell.formula || this.activeCell.value;
     }
 
     changeCell = (newX, newY) => {
@@ -160,9 +167,10 @@ export class Excel {
                 this.activeYAxis = newY;
 
                 this.activeCell.cell.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});
-                this.showActiveNavbar();
 
-                this.currentCellDisplay.innerText = this.LETTERS[this.activeXAxis] + (this.activeYAxis + 1);
+                this.showActiveNavbar();
+                this.updateActiveCellDisplay();
+                this.updateFormulaBar();
             }
         }
     }
