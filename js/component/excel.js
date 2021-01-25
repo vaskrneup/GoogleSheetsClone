@@ -219,27 +219,33 @@ export class Excel {
                 let output = 0;
 
                 if (parsedData !== null) {
+                    // for comma separated formulas !!
+                    // TODO: cleanup and make more efficient !!
                     if (parsedData[0].isTwoDigitSum) {
-                        switch (formulaFor) {
-                            case "=SUM(": {
-                                output = this.grid[parsedData[0].y][parsedData[0].x].value + this.grid[parsedData[1].y][parsedData[1].x].value;
-                                break;
-                            }
-                            case "=AVERAGE(": {
-                                output = (this.grid[parsedData[0].y][parsedData[0].x].value + this.grid[parsedData[1].y][parsedData[1].x].value) / 2;
-                                break;
-                            }
-                            case "=COUNT(": {
-                                output = 2;
-                                break;
-                            }
-                            case "=MAX(": {
-                                output = this.grid[parsedData[0].y][parsedData[0].x].value > this.grid[parsedData[1].y][parsedData[1].x].value ? this.grid[parsedData[0].y][parsedData[0].x].value : this.grid[parsedData[1].y][parsedData[1].x].value;
-                                break;
-                            }
-                            case "=MIN(": {
-                                output = this.grid[parsedData[0].y][parsedData[0].x].value < this.grid[parsedData[1].y][parsedData[1].x].value ? this.grid[parsedData[0].y][parsedData[0].x].value : this.grid[parsedData[1].y][parsedData[1].x].value;
-                                break;
+                        for (let i = 0; i < parsedData.length; i++) {
+                            switch (formulaFor) {
+                                case "=SUM(": {
+                                    output += this.grid[parsedData[i].y][parsedData[i].x].value;
+                                    break;
+                                }
+                                case "=AVERAGE(": {
+                                    output += this.grid[parsedData[i].y][parsedData[i].x].value;
+                                    if (i === parsedData.length - 1) output = output / parsedData.length;
+                                    break;
+                                }
+                                case "=COUNT(": {
+                                    if (typeof this.grid[parsedData[i].y][parsedData[i].x].value === 'number') output++;
+                                    break;
+                                }
+                                case "=MAX(": {
+                                    if (this.grid[parsedData[i].y][parsedData[i].x].value > output) output = this.grid[parsedData[i].y][parsedData[i].x].value;
+                                    break;
+                                }
+                                case "=MIN(": {
+                                    if (output === 0) output = this.grid[parsedData[i].y][parsedData[i].x].value;
+                                    if (this.grid[parsedData[i].y][parsedData[i].x].value < output) output = this.grid[parsedData[i].y][parsedData[i].x].value;
+                                    break;
+                                }
                             }
                         }
                     } else {
