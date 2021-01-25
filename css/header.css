@@ -60,3 +60,8 @@
     overflow: hidden;
     padding: 10px 5px;
 }
+
+.navbar-between {
+    padding: 5px;
+    background-color: red;
+}

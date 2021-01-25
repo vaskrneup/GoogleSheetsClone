@@ -3,10 +3,11 @@ import {Cell} from "./cell.js";
 export class Excel {
     LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-    constructor(numberOfRows, numberOfColumns, tableContainerId) {
+    constructor(numberOfRows, numberOfColumns, tableContainerId, colorPickerId) {
         this.numberOfRows = numberOfRows;
         this.numberOfColumns = numberOfColumns;
 
+        this.colorPicker = document.getElementById(colorPickerId);
         this.tableContainer = document.getElementById(tableContainerId);
         this.tbody = null;
 
@@ -160,7 +161,16 @@ export class Excel {
         this.isEditing = true; // for saying editing has started in current cell !!
     }
 
+    handleCellColorChange = (e) => {
+        this.activeCell.addStyles({
+            backgroundColor: e.target.value
+        });
+        this.activeCell.compileStyles();
+    }
+
     addEventListeners = () => {
+        this.colorPicker.addEventListener('input', this.handleCellColorChange);
+
         document.addEventListener('keydown', this.handleKeyPress);
         document.addEventListener('cellChangedPosition', this.handleCellClick);
     }

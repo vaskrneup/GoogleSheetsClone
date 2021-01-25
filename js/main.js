@@ -14,7 +14,7 @@ const functionHandleEvents = () => {
 }
 
 const main = () => {
-    const excel = new Excel(100, 26, 'excel-table');
+    const excel = new Excel(100, 26, 'excel-table', 'color-picker');
     excel.render()
 }
 
