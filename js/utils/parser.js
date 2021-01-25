@@ -28,7 +28,7 @@ export const parseMathSyntax = (text, operationType) => {
                 }
             }
 
-            finalCoordinates.push({x: parseInt(x), y: parseInt(y) - 1});
+            finalCoordinates.push({x: parseInt(x), y: parseInt(y) - 1, isTwoDigitSum: isTwoDigitSum});
         });
 
         return finalCoordinates;
