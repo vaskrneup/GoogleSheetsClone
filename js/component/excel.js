@@ -3,11 +3,21 @@ import {Cell} from "./cell.js";
 export class Excel {
     LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-    constructor(numberOfRows, numberOfColumns, tableContainerId, colorPickerId) {
+    constructor(numberOfRows, numberOfColumns, tableContainerId,
+                backgroundColorPickerId, textColorPickerId, fontSizeInputId,
+                boldBtnId, italicBtnId, crossedFontBtnId, underlineBtnId) {
         this.numberOfRows = numberOfRows;
         this.numberOfColumns = numberOfColumns;
 
-        this.colorPicker = document.getElementById(colorPickerId);
+        this.backgroundColorPicker = document.getElementById(backgroundColorPickerId);
+        this.textColorPicker = document.getElementById(textColorPickerId);
+        this.fontSizeInput = document.getElementById(fontSizeInputId);
+
+        this.boldBtn = document.getElementById(boldBtnId);
+        this.italicBtn = document.getElementById(italicBtnId);
+        this.crossedFontBtn = document.getElementById(crossedFontBtnId);
+        this.underlineBtn = document.getElementById(underlineBtnId);
+
         this.tableContainer = document.getElementById(tableContainerId);
         this.tbody = null;
 
@@ -161,15 +171,52 @@ export class Excel {
         this.isEditing = true; // for saying editing has started in current cell !!
     }
 
-    handleCellColorChange = (e) => {
+    handleCellBackgroundColorChange = (e) => {
         this.activeCell.addStyles({
             backgroundColor: e.target.value
         });
         this.activeCell.compileStyles();
     }
 
+    handleCellTextColorChange = (e) => {
+        this.activeCell.addStyles({
+            color: e.target.value
+        });
+        this.activeCell.compileStyles();
+    }
+
+    handleFontSizeChange = (e) => {
+        this.activeCell.addStyles({
+            fontSize: e.target.value + 'px'
+        });
+        this.activeCell.compileStyles();
+    }
+
+    handleItalicChange = (e) => {
+
+    }
+
+    handleBoldChange = (e) => {
+
+    }
+
+    handleStrikeThroughChange = (e) => {
+
+    }
+
+    handleUnderlineChange = (e) => {
+
+    }
+
     addEventListeners = () => {
-        this.colorPicker.addEventListener('input', this.handleCellColorChange);
+        this.backgroundColorPicker.addEventListener('input', this.handleCellBackgroundColorChange);
+        this.textColorPicker.addEventListener('input', this.handleCellTextColorChange)
+        this.fontSizeInput.addEventListener('input', this.handleFontSizeChange)
+
+        this.italicBtn.addEventListener('input', this.handleItalicChange)
+        this.boldBtn.addEventListener('input', this.handleBoldChange)
+        this.crossedFontBtn.addEventListener('input', this.handleStrikeThroughChange)
+        this.underlineBtn.addEventListener('input', this.handleUnderlineChange)
 
         document.addEventListener('keydown', this.handleKeyPress);
         document.addEventListener('cellChangedPosition', this.handleCellClick);
