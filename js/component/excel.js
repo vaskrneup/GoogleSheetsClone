@@ -220,40 +220,39 @@ export class Excel {
 
                 if (parsedData !== null) {
                     // for comma separated formulas !!
-                    // TODO: cleanup and make more efficient !!
                     if (parsedData[0].isTwoDigitSum) {
                         for (let i = 0; i < parsedData.length; i++) {
+                            const cellValue = this.grid[parsedData[i].y][parsedData[i].x].value;
+
                             switch (formulaFor) {
                                 case "=SUM(": {
-                                    output += this.grid[parsedData[i].y][parsedData[i].x].value;
+                                    output += cellValue;
                                     break;
                                 }
                                 case "=AVERAGE(": {
-                                    output += this.grid[parsedData[i].y][parsedData[i].x].value;
+                                    output += cellValue;
                                     if (i === parsedData.length - 1) output = output / parsedData.length;
                                     break;
                                 }
                                 case "=COUNT(": {
-                                    if (typeof this.grid[parsedData[i].y][parsedData[i].x].value === 'number') output++;
+                                    if (typeof cellValue === 'number') output++;
                                     break;
                                 }
                                 case "=MAX(": {
-                                    if (this.grid[parsedData[i].y][parsedData[i].x].value > output) output = this.grid[parsedData[i].y][parsedData[i].x].value;
+                                    if (cellValue > output) output = cellValue;
                                     break;
                                 }
                                 case "=MIN(": {
-                                    if (output === 0) output = this.grid[parsedData[i].y][parsedData[i].x].value;
-                                    if (this.grid[parsedData[i].y][parsedData[i].x].value < output) output = this.grid[parsedData[i].y][parsedData[i].x].value;
+                                    if (output === 0) output = cellValue;
+                                    if (cellValue < output) output = cellValue;
                                     break;
                                 }
                             }
                         }
-                    } else {
-                        if (parsedData[0].x === parsedData[1].x) {
-                            const xValue = parsedData[0].x;
-
+                    } else { // for sequence of rows or columns !!
+                        if (parsedData[0].x === parsedData[1].x) { // For vertical calculations !!
                             for (let i = parsedData[0].y; i <= parsedData[1].y; i++) {
-                                const cellValue = this.grid[i][xValue].value;
+                                const cellValue = this.grid[i][parsedData[0].x].value;
 
                                 switch (formulaFor) {
                                     case "=SUM(": {
@@ -280,33 +279,33 @@ export class Excel {
                                     }
                                 }
                             }
-                        } else if (parsedData[0].y === parsedData[1].y) {
+                        } else if (parsedData[0].y === parsedData[1].y) { // For horizontal calculations !!
                             for (let i = parsedData[0].x; i <= parsedData[1].x; i++) {
+                                const cellValue = this.grid[parsedData[0].y][i].value;
+
                                 switch (formulaFor) {
                                     case "=SUM(": {
-                                        output += this.grid[parsedData[0].y][i].value;
+                                        output += cellValue;
                                         break;
                                     }
                                     case "=AVERAGE(": {
-                                        output += this.grid[parsedData[0].y][i].value;
-                                        if (parsedData[1].x === i) {
-                                            output = output / (parsedData[1].x - parsedData[0].x + 1);
-                                        }
+                                        output += cellValue;
+                                        if (parsedData[1].x === i) output = output / (parsedData[1].x - parsedData[0].x + 1);
                                         break;
                                     }
                                     case "=COUNT(": {
-                                        if (typeof this.grid[parsedData[0].y][i].value === "number") {
+                                        if (typeof cellValue === "number") {
                                             output++;
                                         }
                                         break;
                                     }
                                     case "=MAX(": {
-                                        if (this.grid[parsedData[0].y][i].value > output) output = this.grid[parsedData[0].y][i].value;
+                                        if (cellValue > output) output = cellValue;
                                         break;
                                     }
                                     case "=MIN(": {
-                                        if (i === parsedData[0].x) output = this.grid[parsedData[0].y][i].value;
-                                        if (this.grid[parsedData[0].y][i].value < output) output = this.grid[parsedData[0].y][i].value;
+                                        if (i === parsedData[0].x) output = cellValue;
+                                        if (cellValue < output) output = cellValue;
                                         break;
                                     }
                                 }
