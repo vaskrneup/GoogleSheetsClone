@@ -250,7 +250,36 @@ export class Excel {
                         }
                     } else {
                         if (parsedData[0].x === parsedData[1].x) {
-                            console.log(parsedData[0].x)
+                            const xValue = parsedData[0].x;
+
+                            for (let i = parsedData[0].y; i <= parsedData[1].y; i++) {
+                                const cellValue = this.grid[i][xValue].value;
+
+                                switch (formulaFor) {
+                                    case "=SUM(": {
+                                        output += cellValue;
+                                        break;
+                                    }
+                                    case "=AVERAGE(": {
+                                        output += cellValue;
+                                        if (parsedData[1].y === i) output = output / (parsedData[1].y - parsedData[0].y + 1);
+                                        break;
+                                    }
+                                    case "=COUNT(": {
+                                        if (typeof cellValue === "number") output++;
+                                        break;
+                                    }
+                                    case "=MAX(": {
+                                        if (cellValue > output) output = cellValue;
+                                        break;
+                                    }
+                                    case "=MIN(": {
+                                        if (i === parsedData[0].y) output = cellValue;
+                                        if (cellValue < output) output = cellValue;
+                                        break;
+                                    }
+                                }
+                            }
                         } else if (parsedData[0].y === parsedData[1].y) {
                             for (let i = parsedData[0].x; i <= parsedData[1].x; i++) {
                                 switch (formulaFor) {
