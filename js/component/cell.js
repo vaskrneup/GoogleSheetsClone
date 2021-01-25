@@ -1,4 +1,5 @@
 import {BaseComponent} from "./baseComponent.js";
+import {parseMathSyntax} from "../utils/parser.js";
 
 
 export class Cell extends BaseComponent {
@@ -10,6 +11,7 @@ export class Cell extends BaseComponent {
         this.yAxis = yAxis;
 
         this.value = '';
+        this.formula = '';
 
         this.positionChangeEvent = new CustomEvent('cellChangedPosition', {
             detail: {
@@ -39,18 +41,22 @@ export class Cell extends BaseComponent {
         const currentValueAsNumber = Number(e.target.value);
 
         if (currentValueAsNumber) {
-            this.addStyles({textAlign: 'right'})
+            this.addStyles({textAlign: 'right'});
             this.value = currentValueAsNumber;
         } else {
             this.value = e.target.value;
-            this.removeStyles(['textAlign'])
+            this.removeStyles(['textAlign']);
         }
 
         this.compileStyles();
     }
 
     addEventListeners = () => {
+        this.cell.addEventListener('lastCellUpdated', this.classifyAsTextOrNot);
         this.cell.addEventListener('change', this.classifyAsTextOrNot);
+
+        this.cell.addEventListener('change', this.handleFormulaUsage);
+
         this.cell.addEventListener('focus', () => document.dispatchEvent(this.positionChangeEvent));
     }
 

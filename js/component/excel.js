@@ -1,7 +1,9 @@
 import {Cell} from "./cell.js";
+import {parseMathSyntax} from "../utils/parser.js";
 
 export class Excel {
     LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    ALLOWED_FORMULA = ['SUM', 'AVERAGE', 'COUNT', 'MIN', 'MAX'];
 
     constructor(numberOfRows, numberOfColumns, tableContainerId,
                 backgroundColorPickerId, textColorPickerId, fontSizeInputId,
@@ -29,8 +31,6 @@ export class Excel {
         this.activeYAxis = 0;
 
         this.isEditing = false;
-
-        this.addEventListeners();
     }
 
     handleKeyPress = (e) => {
@@ -212,6 +212,30 @@ export class Excel {
         this.activeCell.compileStyles();
     }
 
+    handleFormulaUsage = (e) => {
+        this.ALLOWED_FORMULA.forEach(formulaFor => {
+            if (e.target.value.includes(formulaFor)) {
+                const parsedData = parseMathSyntax(e.target.value, formulaFor);
+                let output = 0;
+
+                if (parsedData !== null) {
+                    if (parsedData[0].x === parsedData[1].x) {
+                        console.log(parsedData[0].x)
+                    } else if (parsedData[0].y === parsedData[1].y) {
+                        for (let i = parsedData[0].x; i <= parsedData[1].x; i++) {
+                            output += this.grid[parsedData[0].y][i].value;
+                        }
+                    }
+                }
+
+                const positionChangeEvent = new Event('lastCellUpdated');
+                this.lastCell.formula = e.target.value;
+                this.lastCell.cell.value = output.toString();
+                this.lastCell.cell.dispatchEvent(positionChangeEvent);
+            }
+        });
+    }
+
     addEventListeners = () => {
         this.backgroundColorPicker.addEventListener('input', this.handleCellBackgroundColorChange);
         this.textColorPicker.addEventListener('input', this.handleCellTextColorChange)
@@ -242,7 +266,9 @@ export class Excel {
             const row = [];
 
             for (let col_count = 0; col_count < this.numberOfColumns; col_count++) {
-                row.push(new Cell(col_count, row_count));
+                const cell = new Cell(col_count, row_count);
+                cell.cell.addEventListener('change', this.handleFormulaUsage);
+                row.push(cell);
             }
 
             this.grid.push(row);
@@ -296,6 +322,7 @@ export class Excel {
 
         this.showActiveCell();
         this.showActiveNavbar();
+        this.addEventListeners();
     }
     // END RENDERING DOM OBJECTS !!
 }
