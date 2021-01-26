@@ -1,9 +1,10 @@
-import {Excel} from "./component/excel.js";
-import {downloadData} from "./utils/DOM.js";
+import {Excel, getGridFromJson} from "./component/excel.js";
+import {downloadData, readFile} from "./utils/DOM.js";
 
 // Selectors !!
 const documentNameDOM = document.getElementById('current-doc-name-input');
 const saveDataDOM = document.getElementById('save-data-btn');
+const uploadDataDOM = document.getElementById('upload-data-btn');
 
 // END Selectors !!
 
@@ -24,9 +25,20 @@ const main = () => {
     );
     excel.render();
 
-    // TEST CODE !!
-    saveDataDOM.addEventListener('click', (e) => {
+    saveDataDOM.addEventListener('click', () => {
         downloadData('json', documentNameDOM.value + '.json', JSON.stringify(excel.serialize()));
+    });
+
+    uploadDataDOM.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        
+        readFile(file, (fileData) => {
+            const spreadsheetJsonData = JSON.parse(fileData);
+            const data = getGridFromJson(spreadsheetJsonData);
+
+            excel.resetGrid(data);
+            documentNameDOM.value = spreadsheetJsonData.name;
+        });
     });
 }
 

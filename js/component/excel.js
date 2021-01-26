@@ -73,6 +73,8 @@ export class Excel {
 
     serialize = () => {
         return {
+            name: document.getElementById('current-doc-name-input').value, // TODO: make param !!
+
             numberOfRows: this.numberOfRows,
             numberOfColumns: this.numberOfColumns,
             tableContainerId: this.tableContainerId,
@@ -438,6 +440,18 @@ export class Excel {
     // END CREATE DOM OBJECTS !!
 
     // RENDERING DOM OBJECTS !!
+    resetGrid = (grid) => {
+        this.tbody.innerHTML = '';
+        this.grid = grid;
+        this.renderCells();
+
+        this.grid.forEach(row => {
+            row.forEach(cell => {
+                cell.cell.value = cell.value;
+            });
+        });
+    }
+
     renderAvailableFonts = () => {
         let fontOptionsHTML = '';
         this.AVAILABLE_FONTS.forEach(font => {
@@ -499,12 +513,15 @@ export class Excel {
     // END RENDERING DOM OBJECTS !!
 }
 
-const createExcelFromJson = (data) => {
+export const getGridFromJson = (data) => data.grids.map(row => row.map(cell => createCellFromJson(cell)))
+
+
+export const createExcelFromJson = (data) => {
     return new Excel(
         data.numberOfRows, data.numberOfColumns,
         data.tableContainerId,
         data.backgroundColorPickerId, data.textColorPickerId, data.fontSizeInputId,
         data.boldBtnId, data.italicBtnId, data.crossedFontBtnId, data.currentCellDisplayId,
-        data.formulaInputId, data.fontSelectorId, data.grids.map(cell => createCellFromJson(cell))
+        data.formulaInputId, data.fontSelectorId, getGridFromJson(data)
     );
 }
