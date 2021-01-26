@@ -1,4 +1,4 @@
-import {Cell} from "./cell.js";
+import {Cell, createCellFromJson} from "./cell.js";
 import {parseMathSyntax} from "../utils/parser.js";
 
 export class Excel {
@@ -30,9 +30,20 @@ export class Excel {
     constructor(numberOfRows, numberOfColumns, tableContainerId,
                 backgroundColorPickerId, textColorPickerId, fontSizeInputId,
                 boldBtnId, italicBtnId, crossedFontBtnId,
-                currentCellDisplayId, formulaInputId, fontSelectorId) {
+                currentCellDisplayId, formulaInputId, fontSelectorId, grid) {
         this.numberOfRows = numberOfRows;
         this.numberOfColumns = numberOfColumns;
+
+        this.tableContainerId = tableContainerId;
+        this.backgroundColorPickerId = backgroundColorPickerId;
+        this.textColorPickerId = textColorPickerId;
+        this.fontSizeInputId = fontSizeInputId;
+        this.boldBtnId = boldBtnId;
+        this.italicBtnId = italicBtnId;
+        this.crossedFontBtnId = crossedFontBtnId;
+        this.currentCellDisplayId = currentCellDisplayId;
+        this.formulaInputId = formulaInputId;
+        this.fontSelectorId = fontSelectorId;
 
         this.backgroundColorPicker = document.getElementById(backgroundColorPickerId);
         this.textColorPicker = document.getElementById(textColorPickerId);
@@ -49,7 +60,7 @@ export class Excel {
         this.tableContainer = document.getElementById(tableContainerId);
         this.tbody = null;
 
-        this.grid = [];
+        this.grid = grid || [];
 
         this.lastActiveXAxis = 0;
         this.lastActiveYAxis = 0;
@@ -58,6 +69,27 @@ export class Excel {
         this.activeYAxis = 0;
 
         this.isEditing = false;
+    }
+
+    serialize = () => {
+        return {
+            numberOfRows: this.numberOfRows,
+            numberOfColumns: this.numberOfColumns,
+            tableContainerId: this.tableContainerId,
+            backgroundColorPickerId: this.backgroundColorPickerId,
+            textColorPickerId: this.textColorPickerId,
+            fontSizeInputId: this.fontSizeInputId,
+            boldBtnId: this.boldBtnId,
+            italicBtnId: this.italicBtnId,
+            crossedFontBtnId: this.crossedFontBtnId,
+            currentCellDisplayId: this.currentCellDisplayId,
+            formulaInputId: this.formulaInputId,
+            fontSelectorId: this.fontSelectorId,
+
+            grids: this.grid.map(cell => {
+                return cell.serialize();
+            })
+        };
     }
 
     handleKeyPress = (e) => {
@@ -454,7 +486,8 @@ export class Excel {
         this.renderTable();
         this.tbody = this.tableContainer.querySelector('tbody');
 
-        this.createRowsAndColumns();
+        if (this.grid.length === 0) this.createRowsAndColumns();
+
         this.renderCells();
         this.renderAvailableFonts();
 
@@ -466,4 +499,14 @@ export class Excel {
         this.addEventListeners();
     }
     // END RENDERING DOM OBJECTS !!
+}
+
+const createExcelFromJson = (data) => {
+    return new Excel(
+        data.numberOfRows, data.numberOfColumns,
+        data.tableContainerId,
+        data.backgroundColorPickerId, data.textColorPickerId, data.fontSizeInputId,
+        data.boldBtnId, data.italicBtnId, data.crossedFontBtnId, data.currentCellDisplayId,
+        data.formulaInputId, data.fontSelectorId, data.grids.map(cell => createCellFromJson(cell))
+    );
 }

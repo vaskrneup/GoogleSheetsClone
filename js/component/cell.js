@@ -1,5 +1,4 @@
 import {BaseComponent} from "./baseComponent.js";
-import {parseMathSyntax} from "../utils/parser.js";
 
 
 export class Cell extends BaseComponent {
@@ -21,6 +20,18 @@ export class Cell extends BaseComponent {
         });
 
         this.addEventListeners();
+    }
+
+    serialize = () => {
+        return {
+            xAxis: this.xAxis,
+            yAxis: this.yAxis,
+
+            value: this.value,
+            formula: this.formula,
+
+            styles: this.styles
+        };
     }
 
     compileStyles = () => {
@@ -67,4 +78,11 @@ export class Cell extends BaseComponent {
         this.cell.classList.add('cell');
         this.compileStyles();
     }
+}
+
+export const createCellFromJson = (data) => {
+    const cell = new Cell(data.xAxis, data.yAxis, data.styles);
+    cell.value = data.value;
+    cell.formula = data.formula;
+    return cell;
 }
