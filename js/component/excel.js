@@ -6,12 +6,12 @@ export class Excel {
     ALLOWED_FORMULA = ['=SUM(', '=AVERAGE(', '=COUNT(', '=MIN(', '=MAX('];
     AVAILABLE_FONTS = [
         {
-            value: 'serif',
-            displayName: 'Serif'
-        },
-        {
             value: 'sans-serif',
             displayName: 'Sans Serif'
+        },
+        {
+            value: 'serif',
+            displayName: 'Serif'
         },
         {
             value: 'cursive',
@@ -286,6 +286,7 @@ export class Excel {
             if (e.target.value.includes(formulaFor)) {
                 const parsedData = parseMathSyntax(e.target.value, formulaFor);
                 let output = 0;
+                let isValidFormula = true;
 
                 if (parsedData !== null) {
                     // for comma separated formulas !!
@@ -379,14 +380,18 @@ export class Excel {
                                     }
                                 }
                             }
+                        } else {
+                            isValidFormula = false;
                         }
                     }
                 }
 
-                const positionChangeEvent = new Event('lastCellUpdated');
-                this.lastCell.formula = e.target.value;
-                this.lastCell.cell.value = output.toString();
-                this.lastCell.cell.dispatchEvent(positionChangeEvent);
+                if (isValidFormula) {
+                    const positionChangeEvent = new Event('lastCellUpdated');
+                    this.lastCell.formula = e.target.value;
+                    this.lastCell.cell.value = output.toString();
+                    this.lastCell.cell.dispatchEvent(positionChangeEvent);
+                }
             }
         });
     }
