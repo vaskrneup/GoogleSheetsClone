@@ -86,9 +86,7 @@ export class Excel {
             formulaInputId: this.formulaInputId,
             fontSelectorId: this.fontSelectorId,
 
-            grids: this.grid.map(cell => {
-                return cell.serialize();
-            })
+            grids: this.grid.map(row => row.map(cell => cell.serialize()))
         };
     }
 

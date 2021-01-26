@@ -12,6 +12,7 @@
 
 .theme-button:hover {
     background-color: #007000;
+    cursor: pointer;
 }
 
 .theme-button:disabled {
