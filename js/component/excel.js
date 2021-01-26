@@ -4,11 +4,33 @@ import {parseMathSyntax} from "../utils/parser.js";
 export class Excel {
     LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     ALLOWED_FORMULA = ['=SUM(', '=AVERAGE(', '=COUNT(', '=MIN(', '=MAX('];
+    AVAILABLE_FONTS = [
+        {
+            value: 'serif',
+            displayName: 'Serif'
+        },
+        {
+            value: 'sans-serif',
+            displayName: 'Sans Serif'
+        },
+        {
+            value: 'cursive',
+            displayName: 'Cursive'
+        },
+        {
+            value: 'fantasy',
+            displayName: 'Fantasy'
+        },
+        {
+            value: 'monospace',
+            displayName: 'Monospace'
+        },
+    ]
 
     constructor(numberOfRows, numberOfColumns, tableContainerId,
                 backgroundColorPickerId, textColorPickerId, fontSizeInputId,
                 boldBtnId, italicBtnId, crossedFontBtnId,
-                currentCellDisplayId, formulaInputId) {
+                currentCellDisplayId, formulaInputId, fontSelectorId) {
         this.numberOfRows = numberOfRows;
         this.numberOfColumns = numberOfColumns;
 
@@ -22,6 +44,7 @@ export class Excel {
 
         this.currentCellDisplay = document.getElementById(currentCellDisplayId);
         this.formulaInput = document.getElementById(formulaInputId);
+        this.fontSelector = document.getElementById(fontSelectorId);
 
         this.tableContainer = document.getElementById(tableContainerId);
         this.tbody = null;
@@ -336,10 +359,18 @@ export class Excel {
         });
     }
 
+    handleFontFamilyChange = (e) => {
+        this.activeCell.addStyles({
+            fontFamily: e.target.value
+        });
+        this.activeCell.compileStyles();
+    }
+
     addEventListeners = () => {
         this.backgroundColorPicker.addEventListener('input', this.handleCellBackgroundColorChange);
         this.textColorPicker.addEventListener('input', this.handleCellTextColorChange)
         this.fontSizeInput.addEventListener('input', this.handleFontSizeChange)
+        this.fontSelector.addEventListener('change', this.handleFontFamilyChange)
 
         this.italicBtn.addEventListener('click', this.handleItalicChange)
         this.boldBtn.addEventListener('click', this.handleBoldChange)
@@ -377,6 +408,15 @@ export class Excel {
     // END CREATE DOM OBJECTS !!
 
     // RENDERING DOM OBJECTS !!
+    renderAvailableFonts = () => {
+        let fontOptionsHTML = '';
+        this.AVAILABLE_FONTS.forEach(font => {
+            fontOptionsHTML += `<option value="${font.value}" style="font-family: ${font.value}">${font.displayName}</option>`;
+        });
+
+        this.fontSelector.innerHTML = fontOptionsHTML;
+    }
+
     renderTable = () => {
         this.tableContainer.innerHTML = `
             <table>
@@ -416,6 +456,7 @@ export class Excel {
 
         this.createRowsAndColumns();
         this.renderCells();
+        this.renderAvailableFonts();
 
         this.lastCell = this.grid[this.activeYAxis][this.activeXAxis];
         this.activeCell = this.grid[this.activeYAxis][this.activeXAxis];

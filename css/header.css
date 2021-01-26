@@ -66,6 +66,10 @@
     border-bottom: 1px solid grey;
 }
 
+.font-size-input {
+    border: 1px solid grey;
+}
+
 .cell-style-change-btn {
     background-color: transparent;
     border: none;
