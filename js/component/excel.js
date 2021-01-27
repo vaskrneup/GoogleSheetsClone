@@ -1,6 +1,7 @@
 import {Cell, createCellFromJson} from "./cell.js";
 import {DotGraph} from "./graph.js";
 import {parseMathSyntax} from "../utils/parser.js";
+import {Modal} from "./modal.js";
 
 export class Excel {
     LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -31,7 +32,7 @@ export class Excel {
     constructor(numberOfRows, numberOfColumns, tableContainerId,
                 backgroundColorPickerId, textColorPickerId, fontSizeInputId,
                 boldBtnId, italicBtnId, crossedFontBtnId,
-                currentCellDisplayId, formulaInputId, fontSelectorId, grid) {
+                currentCellDisplayId, formulaInputId, fontSelectorId, graphPlotBtnId, grid) {
         this.numberOfRows = numberOfRows;
         this.numberOfColumns = numberOfColumns;
 
@@ -45,6 +46,7 @@ export class Excel {
         this.currentCellDisplayId = currentCellDisplayId;
         this.formulaInputId = formulaInputId;
         this.fontSelectorId = fontSelectorId;
+        this.graphPlotBtnId = graphPlotBtnId;
 
         this.backgroundColorPicker = document.getElementById(backgroundColorPickerId);
         this.textColorPicker = document.getElementById(textColorPickerId);
@@ -58,20 +60,14 @@ export class Excel {
         this.formulaInput = document.getElementById(formulaInputId);
         this.fontSelector = document.getElementById(fontSelectorId);
 
+        this.graphPlotBtn = document.getElementById(graphPlotBtnId);
+
         this.tableContainer = document.getElementById(tableContainerId);
         this.tbody = null;
 
         this.grid = grid || [];
 
-        // TODO: REMOVE !!
-        const x = [];
-        const y = [];
-        for (let i = 0; i < 100; i++) {
-            x.push( Math.random() * 100);
-            y.push( Math.random() * 100);
-        }
-
-        this.graphManager = new DotGraph(x, y, 'Number', 'Values');
+        this.graphManager = new DotGraph(null, null, 'Number', 'Values');
 
         this.lastActiveXAxis = 0;
         this.lastActiveYAxis = 0;
@@ -80,6 +76,7 @@ export class Excel {
         this.activeYAxis = 0;
 
         this.isEditing = false;
+        this.modal = new Modal({});
     }
 
     serialize = () => {
@@ -98,6 +95,7 @@ export class Excel {
             currentCellDisplayId: this.currentCellDisplayId,
             formulaInputId: this.formulaInputId,
             fontSelectorId: this.fontSelectorId,
+            graphPlotBtnId: this.graphPlotBtnId,
 
             grids: this.grid.map(row => row.map(cell => cell.serialize()))
         };
@@ -414,15 +412,90 @@ export class Excel {
         this.activeCell.compileStyles();
     }
 
+    handleGraphBtnClick = () => {
+        const formHTML = `
+        <div>
+            <h2>Plot Graph from cell data</h2>
+            
+            <br>
+            
+            <div>
+                <h3>Row or column for X-Axis</h3>
+                <label><input type="text" id="x-axis-from" placeholder="X axis start cell"></label>
+                <label><input type="text" id="x-axis-to" placeholder="X axis end cell"></label>
+            </div>
+            
+            <br>
+            
+            <div>
+                <h3>Row or column for Y-Axis</h3>
+                <label><input type="text" id="y-axis-from" placeholder="Y axis start cell"></label>
+                <label><input type="text" id="y-axis-to" placeholder="Y axis end cell"></label>
+            </div>
+            
+            <br>
+            
+            <div>
+                <input type="button" value="Plot Graph" id="submit-graph-form">
+            </div>
+        </div>
+        `;
+
+        this.modal.addModelBody(formHTML);
+        this.modal.show();
+
+        document.getElementById('submit-graph-form').addEventListener('click', this.handleGraphDetailForm);
+        // this.graphManager.render();
+    }
+
+    handleGraphDetailForm = () => {
+        // TODO: better algo !!
+        const xAxisValues = parseMathSyntax('=SUM(' + document.getElementById('x-axis-from').value + ':' + document.getElementById('x-axis-to').value + ')', '=SUM(');
+        const yAxisValues = parseMathSyntax('=SUM(' + document.getElementById('y-axis-from').value + ':' + document.getElementById('y-axis-to').value + ')', '=SUM(');
+
+        const graphXValues = [];
+        const graphYValues = [];
+
+        if (xAxisValues[0].x === xAxisValues[1].x) { // For vertical calculations !!
+            for (let i = xAxisValues[0].y; i <= xAxisValues[1].y; i++) {
+                const cellValue = this.grid[i][xAxisValues[0].x].value;
+                graphXValues.push(cellValue)
+            }
+        } else if (xAxisValues[0].y === xAxisValues[1].y) { // For horizontal calculations !!
+            for (let i = xAxisValues[0].x; i <= xAxisValues[1].x; i++) {
+                const cellValue = this.grid[xAxisValues[0].y][i].value;
+                graphXValues.push(cellValue)
+            }
+        }
+
+        if (yAxisValues[0].x === yAxisValues[1].x) { // For vertical calculations !!
+            for (let i = yAxisValues[0].y; i <= yAxisValues[1].y; i++) {
+                const cellValue = this.grid[i][yAxisValues[0].x].value;
+                graphYValues.push(cellValue)
+            }
+        } else if (yAxisValues[0].y === yAxisValues[1].y) { // For horizontal calculations !!
+            for (let i = yAxisValues[0].x; i <= yAxisValues[1].x; i++) {
+                const cellValue = this.grid[yAxisValues[0].y][i].value;
+                graphYValues.push(cellValue)
+            }
+        }
+
+        this.graphManager.setValues(graphXValues, graphYValues);
+        this.graphManager.render();
+        this.modal.hide();
+    }
+
     addEventListeners = () => {
         this.backgroundColorPicker.addEventListener('input', this.handleCellBackgroundColorChange);
-        this.textColorPicker.addEventListener('input', this.handleCellTextColorChange)
-        this.fontSizeInput.addEventListener('input', this.handleFontSizeChange)
-        this.fontSelector.addEventListener('change', this.handleFontFamilyChange)
+        this.textColorPicker.addEventListener('input', this.handleCellTextColorChange);
+        this.fontSizeInput.addEventListener('input', this.handleFontSizeChange);
+        this.fontSelector.addEventListener('change', this.handleFontFamilyChange);
 
-        this.italicBtn.addEventListener('click', this.handleItalicChange)
-        this.boldBtn.addEventListener('click', this.handleBoldChange)
-        this.crossedFontBtn.addEventListener('click', this.handleStrikeThroughChange)
+        this.italicBtn.addEventListener('click', this.handleItalicChange);
+        this.boldBtn.addEventListener('click', this.handleBoldChange);
+        this.crossedFontBtn.addEventListener('click', this.handleStrikeThroughChange);
+
+        this.graphPlotBtn.addEventListener('click', this.handleGraphBtnClick);
 
         document.addEventListener('keydown', this.handleKeyPress);
         document.addEventListener('cellChangedPosition', this.handleCellClick);
@@ -509,13 +582,8 @@ export class Excel {
             })
         })
     }
-    // TODO: REMOVE !!
-    testCode = () => {
-        this.graphManager.render();
-    }
 
     render = () => {
-        this.testCode(); // TODO: REMOVE !!
         this.renderTable();
         this.tbody = this.tableContainer.querySelector('tbody');
 

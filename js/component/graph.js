@@ -30,12 +30,13 @@ class Graph {
         this.ctx.restore();
     }
 
-    createGrid(size) {
-
+    setValues = (x, y) => {
+        this.xValues = x;
+        this.yValues = y;
     }
 
     _render = () => {
-        this.createGrid();
+
     }
 
     render = () => {

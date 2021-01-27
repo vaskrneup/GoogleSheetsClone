@@ -21,7 +21,7 @@ const main = () => {
         100, 26, 'excel-table',
         'background-color-picker', 'text-color-picker', 'font-size-input',
         'make-text-bold', 'make-text-italic', 'make-text-strikethrough',
-        'current-cell', 'formula-input', 'font-selector'
+        'current-cell', 'formula-input', 'font-selector', 'plot-graph-btn'
     );
     excel.render();
 
