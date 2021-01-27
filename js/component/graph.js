@@ -1,3 +1,6 @@
+import {Modal} from "./modal.js";
+
+
 class Graph {
     constructor(xValues, yValues, xAxisLabel, yAxisLabel, width, height) {
         this.xValues = xValues;
@@ -16,6 +19,7 @@ class Graph {
     }
 
     createGrid(size) {
+
     }
 
     _render = () => {
@@ -32,6 +36,8 @@ export class DotGraph extends Graph {
     constructor(xValues, yValues, xAxisLabel, yAxisLabel, dotSize = 2, width = 500, height = 400) {
         super(xValues, yValues, xAxisLabel, yAxisLabel, width, height);
         this.dotSize = dotSize;
+
+        this.modal = new Modal();
     }
 
     render = () => {
@@ -42,6 +48,7 @@ export class DotGraph extends Graph {
             this.ctx.stroke();
         }
 
-        document.body.appendChild(this.canvas)
+        this.modal.addModelBody(this.canvas);
+        this.modal.show();
     }
 }
