@@ -6,8 +6,8 @@ class Graph {
         this.xValues = xValues;
         this.yValues = yValues;
 
-        this.xAxisLabel = xAxisLabel;
-        this.yAxisLabel = yAxisLabel;
+        this.xAxisLabel = xAxisLabel || '';
+        this.yAxisLabel = yAxisLabel || '';
 
         this.width = width;
         this.height = height;
@@ -16,7 +16,6 @@ class Graph {
         this.canvas.width = this.width;
         this.canvas.height = this.height;
         this.ctx = this.canvas.getContext('2d');
-        this.ctx.transform(1, 0, 0, -1, 0, this.height);
     }
 
     createGrid(size) {
@@ -42,6 +41,9 @@ export class DotGraph extends Graph {
     }
 
     drawDots = () => {
+        this.ctx.save();
+        this.ctx.transform(1, 0, 0, -1, 0, this.height);
+
         const xAxisGap = (this.width - 10) / Math.max(...this.xValues);
         const yAxisGap = (this.height - 10) / Math.max(...this.yValues);
 
@@ -52,12 +54,32 @@ export class DotGraph extends Graph {
             this.ctx.fill();
             this.ctx.closePath();
         }
+
+        this.ctx.restore();
+    }
+
+    writeLabels = () => {
+        this.ctx.restore();
+        // For X Axis !!
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(this.xAxisLabel, this.width / 2, this.height - 5);
+
+        // For Y Axis !!
+        this.ctx.save();
+        this.ctx.textAlign = 'center';
+        this.ctx.translate(0, this.height);
+        this.ctx.rotate(-Math.PI / 2);
+        this.ctx.textAlign = "center";
+        this.ctx.fillText(this.yAxisLabel, this.height / 2, 10);
+        this.ctx.restore();
+
     }
 
     render = () => {
         this._render();
 
         this.drawDots();
+        this.writeLabels();
 
         this.modal.addModelBody(this.canvas);
         this.modal.addStyles({
