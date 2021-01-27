@@ -72,7 +72,6 @@ export class DotGraph extends Graph {
         this.ctx.textAlign = "center";
         this.ctx.fillText(this.yAxisLabel, this.height / 2, 10);
         this.ctx.restore();
-
     }
 
     render = () => {
