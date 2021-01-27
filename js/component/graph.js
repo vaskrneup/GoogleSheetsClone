@@ -2,7 +2,7 @@ import {Modal} from "./modal.js";
 
 
 class Graph {
-    constructor(xValues, yValues, xAxisLabel, yAxisLabel, width, height) {
+    constructor(xValues, yValues, xAxisLabel, yAxisLabel, width, height, padding = 20) {
         this.xValues = xValues;
         this.yValues = yValues;
 
@@ -12,10 +12,20 @@ class Graph {
         this.width = width;
         this.height = height;
 
+        this.padding = padding;
+
         this.canvas = document.createElement('canvas');
         this.canvas.width = this.width;
         this.canvas.height = this.height;
         this.ctx = this.canvas.getContext('2d');
+
+        this.ctx.save();
+        this.ctx.beginPath();
+        this.ctx.fillStyle = 'white';
+        this.ctx.fillRect(0, 0, this.width, this.height);
+        this.ctx.closePath();
+        this.ctx.moveTo(0, 0);
+        this.ctx.restore();
     }
 
     createGrid(size) {
@@ -33,7 +43,7 @@ class Graph {
 
 
 export class DotGraph extends Graph {
-    constructor(xValues, yValues, xAxisLabel, yAxisLabel, dotSize = 2, width = 500, height = 400) {
+    constructor(xValues, yValues, xAxisLabel, yAxisLabel, dotSize = 1, width = 500, height = 400) {
         super(xValues, yValues, xAxisLabel, yAxisLabel, width, height);
 
         this.dotSize = dotSize;
@@ -44,12 +54,16 @@ export class DotGraph extends Graph {
         this.ctx.save();
         this.ctx.transform(1, 0, 0, -1, 0, this.height);
 
-        const xAxisGap = (this.width - 10) / Math.max(...this.xValues);
-        const yAxisGap = (this.height - 10) / Math.max(...this.yValues);
+        const xAxisGap = (this.width - this.padding * 2 - this.dotSize) / Math.max(...this.xValues);
+        const yAxisGap = (this.height - this.padding * 2 - this.dotSize) / Math.max(...this.yValues);
+        const shift = this.padding + this.dotSize;
 
         for (let i = 0; i < this.xValues.length; i++) {
             this.ctx.beginPath();
-            this.ctx.arc(this.xValues[i] * (xAxisGap), this.yValues[i] * yAxisGap, this.dotSize, 0, 2 * Math.PI);
+            this.ctx.arc(
+                (this.xValues[i] * (xAxisGap)) + shift, (this.yValues[i] * yAxisGap) + shift,
+                this.dotSize, 0, 2 * Math.PI
+            );
             this.ctx.stroke();
             this.ctx.fill();
             this.ctx.closePath();
@@ -74,11 +88,26 @@ export class DotGraph extends Graph {
         this.ctx.restore();
     }
 
+    drawAxisLines = () => {
+        // Y Axis !!
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.padding, 0);
+        this.ctx.lineTo(this.padding, this.height - this.padding);
+        this.ctx.stroke();
+        // this.ctx.closePath();
+
+        // X Axis !!
+        this.ctx.lineTo(this.width - this.padding, this.height - this.padding);
+        this.ctx.stroke();
+        this.ctx.closePath();
+    }
+
     render = () => {
         this._render();
 
         this.drawDots();
         this.writeLabels();
+        this.drawAxisLines();
 
         this.modal.addModelBody(this.canvas);
         this.modal.addStyles({

@@ -62,7 +62,16 @@ export class Excel {
         this.tbody = null;
 
         this.grid = grid || [];
-        this.graphManager = new DotGraph([1, 2, 3, 4], [500, 600, 300, 800], 'Number', 'Values');
+
+        // TODO: REMOVE !!
+        const x = [];
+        const y = [];
+        for (let i = 0; i < 100; i++) {
+            x.push(Math.random() * 100);
+            y.push(Math.random() * 100);
+        }
+
+        this.graphManager = new DotGraph(x, y, 'Number', 'Values');
 
         this.lastActiveXAxis = 0;
         this.lastActiveYAxis = 0;
