@@ -67,8 +67,8 @@ export class Excel {
         const x = [];
         const y = [];
         for (let i = 0; i < 100; i++) {
-            x.push(Math.random() * 100);
-            y.push(Math.random() * 100);
+            x.push( Math.random() * 100);
+            y.push( Math.random() * 100);
         }
 
         this.graphManager = new DotGraph(x, y, 'Number', 'Values');

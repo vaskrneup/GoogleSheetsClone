@@ -2,7 +2,7 @@ import {Modal} from "./modal.js";
 
 
 class Graph {
-    constructor(xValues, yValues, xAxisLabel, yAxisLabel, width, height, padding = 20) {
+    constructor(xValues, yValues, xAxisLabel, yAxisLabel, width, height, padding = 50) {
         this.xValues = xValues;
         this.yValues = yValues;
 
@@ -13,6 +13,8 @@ class Graph {
         this.height = height;
 
         this.padding = padding;
+        this.numberOfValuesInXAxis = 12;
+        this.numberOfValuesInYAxis = 9;
 
         this.canvas = document.createElement('canvas');
         this.canvas.width = this.width;
@@ -43,7 +45,7 @@ class Graph {
 
 
 export class DotGraph extends Graph {
-    constructor(xValues, yValues, xAxisLabel, yAxisLabel, dotSize = 1, width = 500, height = 400) {
+    constructor(xValues, yValues, xAxisLabel, yAxisLabel, dotSize = 1, width = 720, height = 480) {
         super(xValues, yValues, xAxisLabel, yAxisLabel, width, height);
 
         this.dotSize = dotSize;
@@ -88,13 +90,37 @@ export class DotGraph extends Graph {
         this.ctx.restore();
     }
 
+    writeAxisValues = () => {
+        const yStep = (this.height - this.padding * 2) / this.numberOfValuesInYAxis;
+        const xStep = (this.width - this.padding * 2) / this.numberOfValuesInXAxis;
+
+        const xValue = Math.max(...this.xValues) / this.numberOfValuesInXAxis;
+        const yValue = Math.max(...this.yValues) / this.numberOfValuesInYAxis;
+
+        let yCount = this.padding;
+        let xCount = this.padding;
+
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('0', this.padding - 5, this.height - this.padding + 5);
+
+        for (let y = this.numberOfValuesInYAxis; y > 0; y--) {
+            this.ctx.fillText((y * yValue).toFixed(1).toString(), 27, yCount);
+            yCount += yStep;
+        }
+
+        for (let x = 1; x <= this.numberOfValuesInXAxis; x++) {
+            this.ctx.fillText((x * xValue).toFixed(1).toString(), xCount + this.padding, this.height - 40);
+            xCount += xStep;
+        }
+
+        this.ctx.restore();
+    }
+
     drawAxisLines = () => {
         // Y Axis !!
         this.ctx.beginPath();
-        this.ctx.moveTo(this.padding, 0);
+        this.ctx.moveTo(this.padding, this.padding);
         this.ctx.lineTo(this.padding, this.height - this.padding);
-        this.ctx.stroke();
-        // this.ctx.closePath();
 
         // X Axis !!
         this.ctx.lineTo(this.width - this.padding, this.height - this.padding);
@@ -107,6 +133,7 @@ export class DotGraph extends Graph {
 
         this.drawDots();
         this.writeLabels();
+        this.writeAxisValues();
         this.drawAxisLines();
 
         this.modal.addModelBody(this.canvas);
