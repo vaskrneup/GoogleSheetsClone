@@ -1,4 +1,5 @@
 import {Cell, createCellFromJson} from "./cell.js";
+import {DotGraph} from "./graph.js";
 import {parseMathSyntax} from "../utils/parser.js";
 
 export class Excel {
@@ -61,6 +62,7 @@ export class Excel {
         this.tbody = null;
 
         this.grid = grid || [];
+        this.graphManager = new DotGraph([1, 2, 3, 4], [5, 6, 7, 8]);
 
         this.lastActiveXAxis = 0;
         this.lastActiveYAxis = 0;
@@ -498,8 +500,13 @@ export class Excel {
             })
         })
     }
+    // TODO: REMOVE !!
+    testCode = () => {
+        this.graphManager.render();
+    }
 
     render = () => {
+        this.testCode(); // TODO: REMOVE !!
         this.renderTable();
         this.tbody = this.tableContainer.querySelector('tbody');
 

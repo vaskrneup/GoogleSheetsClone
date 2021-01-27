@@ -1,5 +1,5 @@
-import {Excel, getGridFromJson} from "./component/excel.js";
 import {downloadData, readFile} from "./utils/DOM.js";
+import {Excel, getGridFromJson} from "./component/excel.js";
 
 // Selectors !!
 const documentNameDOM = document.getElementById('current-doc-name-input');
@@ -31,7 +31,7 @@ const main = () => {
 
     uploadDataDOM.addEventListener('change', (e) => {
         const file = e.target.files[0];
-        
+
         readFile(file, (fileData) => {
             const spreadsheetJsonData = JSON.parse(fileData);
             const data = getGridFromJson(spreadsheetJsonData);

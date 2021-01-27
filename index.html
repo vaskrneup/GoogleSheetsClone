@@ -21,66 +21,71 @@
 </head>
 <body>
 
-<div class="navbar">
+<div class="theme-wrapper" id="body-wrapper" disabled>
 
-    <div class="navbar-top">
+    <div class="navbar">
 
-        <div class="navbar-left">
+        <div class="navbar-top">
 
-            <div class="navbar-icon">
-                <img src="assets/icons/common/file-excel-solid.svg" alt="Page Logo">
+            <div class="navbar-left">
+
+                <div class="navbar-icon">
+                    <img src="assets/icons/common/file-excel-solid.svg" alt="Page Logo">
+                </div>
+
+                <div class="navbar-current-doc-info">
+                    <label>
+                        <input type="text" class="current-doc-name-input" id="current-doc-name-input"
+                               value="Untitled Spreadsheet">
+                    </label>
+
+                    <span class="current-doc-format">.CSV</span>
+                </div>
+
             </div>
 
-            <div class="navbar-current-doc-info">
-                <label>
-                    <input type="text" class="current-doc-name-input" id="current-doc-name-input"
-                           value="Untitled Spreadsheet">
-                </label>
-
-                <span class="current-doc-format">.CSV</span>
+            <div class="navbar-right">
+                <button class="theme-button" id="save-data-btn">SAVE</button>
+                <input type="file" class="theme-button" id="upload-data-btn">
             </div>
 
         </div>
 
-        <div class="navbar-right">
-            <button class="theme-button" id="save-data-btn">SAVE</button>
-            <input type="file" class="theme-button" id="upload-data-btn">
+        <div class="navbar-between">
+            <label>Background Color: <input type="color" value="#ffffff" id="background-color-picker"></label>
+            <label>Text Color: <input type="color" id="text-color-picker"></label>
+            <label>Font Size: <input class="font-size-input" type="number" max="50" min="5" id="font-size-input"
+                                     value="20"></label>
+
+            <label>
+                Font:
+                <select id="font-selector" class="font-selector"></select>
+            </label>
+
+            <button class="cell-style-change-btn" id="make-text-bold"><i class="fa fa-bold"></i></button>
+            <button class="cell-style-change-btn" id="make-text-italic"><i class="fa fa-italic"></i></button>
+            <button class="cell-style-change-btn" id="make-text-strikethrough"><i class="fa fa-strikethrough"></i>
+            </button>
+        </div>
+
+        <div class="navbar-bottom">
+            <span id="current-cell" class="current-cell">A1</span>
+            <span class="fx">fx</span>
+            <label><input type="text" class="formula-input" id="formula-input"></label>
         </div>
 
     </div>
 
-    <div class="navbar-between">
-        <label>Background Color: <input type="color" value="#ffffff" id="background-color-picker"></label>
-        <label>Text Color: <input type="color" id="text-color-picker"></label>
-        <label>Font Size: <input class="font-size-input" type="number" max="50" min="5" id="font-size-input" value="20"></label>
+    <main>
+        <div id="excel-table" class="excel-table">
+            <!-- THIS WILL BE REPLACED BY SHEETS !! -->
+        </div>
+    </main>
 
-        <label>
-            Font:
-            <select id="font-selector" class="font-selector"></select>
-        </label>
+    <footer>
 
-        <button class="cell-style-change-btn" id="make-text-bold"><i class="fa fa-bold"></i></button>
-        <button class="cell-style-change-btn" id="make-text-italic"><i class="fa fa-italic"></i></button>
-        <button class="cell-style-change-btn" id="make-text-strikethrough"><i class="fa fa-strikethrough"></i></button>
-    </div>
-
-    <div class="navbar-bottom">
-        <span id="current-cell" class="current-cell">A1</span>
-        <span class="fx">fx</span>
-        <label><input type="text" class="formula-input" id="formula-input"></label>
-    </div>
-
+    </footer>
 </div>
-
-<main>
-    <div id="excel-table" class="excel-table">
-        <!-- THIS WILL BE REPLACED BY SHEETS !! -->
-    </div>
-</main>
-
-<footer>
-
-</footer>
 
 <script src="js/main.js" type="module"></script>
 </body>

@@ -18,3 +18,36 @@
 .theme-button:disabled {
     background-color: #94b094;
 }
+
+.theme-modal {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 50%;
+    height: 30%;
+    padding: 1% 1%;
+    background-color: rgba(11, 229, 76, 0.9);
+
+    z-index: 10;
+}
+
+/*.theme-modal-bg {*/
+/*    position: absolute;*/
+/*    top: 45%;*/
+/*    left: 50%;*/
+/*    transform: translate(-50%, -50%);*/
+
+/*    width: 50%;*/
+/*    height: 30%;*/
+/*    padding: 1% 1%;*/
+/*    background-color: rgba(11, 229, 76, 0.9);*/
+
+/*    z-index: 9;*/
+/*    filter: blur(5px);*/
+/*}*/
+
+.theme-blur {
+    filter: blur(3px);
+}

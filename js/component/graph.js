@@ -16,20 +16,32 @@ class Graph {
     }
 
     createGrid(size) {
-        while (size) {
-            
-        }
+    }
+
+    _render = () => {
+        this.createGrid();
     }
 
     render = () => {
-        this.createGrid();
+        this._render();
     }
 }
 
 
-class DotGraph extends Graph {
+export class DotGraph extends Graph {
     constructor(xValues, yValues, xAxisLabel, yAxisLabel, dotSize = 2, width = 500, height = 400) {
         super(xValues, yValues, xAxisLabel, yAxisLabel, width, height);
         this.dotSize = dotSize;
+    }
+
+    render = () => {
+        this._render();
+
+        for (let i = 0; i < this.xValues.length; i++) {
+            this.ctx.fillRect(this.xValues[i] * 10, this.yValues[i] * 10, 3, 3);
+            this.ctx.stroke();
+        }
+
+        document.body.appendChild(this.canvas)
     }
 }
