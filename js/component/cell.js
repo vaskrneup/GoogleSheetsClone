@@ -49,15 +49,20 @@ export class Cell extends BaseComponent {
         this.hasUsedFormula = true;
     }
 
-    addDependentCell = (cell) => this.dependentCells.push(cell);
+    addDependentCell = (cell) => {
+        if (!this.dependentCellExists(cell)) {
+            this.dependentCells.push(cell)
+        }
+    };
 
-    removeDependentCell = (cell) => {
+    dependentCellExists = (cell) => {
         for (let i = 0; i < this.dependentCells.length; i++) {
-            if (JSON.stringify(this.dependentCells[i]) === JSON.parse(cell)) {
-                this.dependentCells.splice(i, 1);
-                break;
+            if (JSON.stringify(this.dependentCells[i]) === JSON.stringify(cell)) {
+                return true;
             }
         }
+
+        return false;
     }
 
     compileStyles = () => {
@@ -91,8 +96,6 @@ export class Cell extends BaseComponent {
     addEventListeners = () => {
         this.cell.addEventListener('lastCellUpdated', this.classifyAsTextOrNot);
         this.cell.addEventListener('change', this.classifyAsTextOrNot);
-
-        this.cell.addEventListener('change', this.handleFormulaUsage);
 
         this.cell.addEventListener('focus', () => document.dispatchEvent(this.positionChangeEvent));
     }

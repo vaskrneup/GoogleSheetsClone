@@ -303,7 +303,7 @@ export class Excel {
                         for (let i = 0; i < parsedData.length; i++) {
                             const cellValue = this.grid[parsedData[i].y][parsedData[i].x].value;
                             this.grid[parsedData[i].y][parsedData[i].x].addDependentCell(
-                                [this.activeCell.yAxis, this.activeCell.xAxis]
+                                {y: this.lastCell.yAxis, x: this.lastCell.xAxis}
                             );
 
                             switch (formulaFor) {
@@ -336,7 +336,7 @@ export class Excel {
                             for (let i = parsedData[0].y; i <= parsedData[1].y; i++) {
                                 const cellValue = this.grid[i][parsedData[0].x].value;
                                 this.grid[i][parsedData[0].x].addDependentCell(
-                                    [this.activeCell.yAxis, this.activeCell.xAxis]
+                                    {y: this.lastCell.yAxis, x: this.lastCell.xAxis}
                                 );
 
                                 switch (formulaFor) {
@@ -368,7 +368,7 @@ export class Excel {
                             for (let i = parsedData[0].x; i <= parsedData[1].x; i++) {
                                 const cellValue = this.grid[parsedData[0].y][i].value;
                                 this.grid[parsedData[0].y][i].addDependentCell(
-                                    [this.activeCell.yAxis, this.activeCell.xAxis]
+                                    {y: this.lastCell.yAxis, x: this.lastCell.xAxis}
                                 );
 
                                 switch (formulaFor) {
@@ -494,6 +494,22 @@ export class Excel {
         this.modal.hide();
     }
 
+    handleUpdateDependentCell = () => {
+        this.lastCell.dependentCells.forEach(cellAxis => {
+            const cell = this.grid[cellAxis.y][cellAxis.x];
+
+            const tempLastCell = this.lastCell;
+            this.lastCell = cell;
+
+            this.handleFormulaUsage({
+                target: {
+                    value: cell.formula
+                }
+            });
+            this.lastCell = tempLastCell;
+        });
+    }
+
     addEventListeners = () => {
         this.backgroundColorPicker.addEventListener('input', this.handleCellBackgroundColorChange);
         this.textColorPicker.addEventListener('input', this.handleCellTextColorChange);
@@ -529,6 +545,7 @@ export class Excel {
             for (let col_count = 0; col_count < this.numberOfColumns; col_count++) {
                 const cell = new Cell(col_count, row_count);
                 cell.cell.addEventListener('change', this.handleFormulaUsage);
+                cell.cell.addEventListener('change', this.handleUpdateDependentCell);
                 row.push(cell);
             }
 
@@ -545,7 +562,7 @@ export class Excel {
 
         this.grid.forEach(row => {
             row.forEach(cell => {
-                cell.cell.setValue(cell.value);
+                cell.cell.value = cell.value;
             });
         });
     }
