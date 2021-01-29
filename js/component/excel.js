@@ -302,6 +302,9 @@ export class Excel {
                     if (parsedData[0].isTwoDigitSum) {
                         for (let i = 0; i < parsedData.length; i++) {
                             const cellValue = this.grid[parsedData[i].y][parsedData[i].x].value;
+                            this.grid[parsedData[i].y][parsedData[i].x].addDependentCell(
+                                [this.activeCell.yAxis, this.activeCell.xAxis]
+                            );
 
                             switch (formulaFor) {
                                 case "=SUM(": {
@@ -332,6 +335,9 @@ export class Excel {
                         if (parsedData[0].x === parsedData[1].x) { // For vertical calculations !!
                             for (let i = parsedData[0].y; i <= parsedData[1].y; i++) {
                                 const cellValue = this.grid[i][parsedData[0].x].value;
+                                this.grid[i][parsedData[0].x].addDependentCell(
+                                    [this.activeCell.yAxis, this.activeCell.xAxis]
+                                );
 
                                 switch (formulaFor) {
                                     case "=SUM(": {
@@ -361,6 +367,9 @@ export class Excel {
                         } else if (parsedData[0].y === parsedData[1].y) { // For horizontal calculations !!
                             for (let i = parsedData[0].x; i <= parsedData[1].x; i++) {
                                 const cellValue = this.grid[parsedData[0].y][i].value;
+                                this.grid[parsedData[0].y][i].addDependentCell(
+                                    [this.activeCell.yAxis, this.activeCell.xAxis]
+                                );
 
                                 switch (formulaFor) {
                                     case "=SUM(": {
@@ -396,10 +405,10 @@ export class Excel {
                 }
 
                 if (isValidFormula) {
-                    const positionChangeEvent = new Event('lastCellUpdated');
-                    this.lastCell.formula = e.target.value;
+                    const lastCellUpdatedEvent = new Event('lastCellUpdated');
+                    this.lastCell.setFormula(e.target.value);
                     this.lastCell.cell.value = output.toString();
-                    this.lastCell.cell.dispatchEvent(positionChangeEvent);
+                    this.lastCell.cell.dispatchEvent(lastCellUpdatedEvent);
                 }
             }
         });
@@ -441,7 +450,7 @@ export class Excel {
         </div>
         `;
 
-        this.modal.addModelBody(formHTML);
+        this.modal.addModelBody(formHTML, true);
         this.modal.show();
 
         document.getElementById('submit-graph-form').addEventListener('click', this.handleGraphDetailForm);
@@ -536,7 +545,7 @@ export class Excel {
 
         this.grid.forEach(row => {
             row.forEach(cell => {
-                cell.cell.value = cell.value;
+                cell.cell.setValue(cell.value);
             });
         });
     }

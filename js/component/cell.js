@@ -11,6 +11,9 @@ export class Cell extends BaseComponent {
 
         this.value = '';
         this.formula = '';
+        this.hasUsedFormula = false;
+
+        this.dependentCells = [];
 
         this.positionChangeEvent = new CustomEvent('cellChangedPosition', {
             detail: {
@@ -34,6 +37,29 @@ export class Cell extends BaseComponent {
         };
     }
 
+    setValue = (value) => {
+        this.value = value;
+
+        if (!this.hasUsedFormula) this.formula = '';
+        this.hasUsedFormula = false;
+    }
+
+    setFormula = (formula) => {
+        this.formula = formula;
+        this.hasUsedFormula = true;
+    }
+
+    addDependentCell = (cell) => this.dependentCells.push(cell);
+
+    removeDependentCell = (cell) => {
+        for (let i = 0; i < this.dependentCells.length; i++) {
+            if (JSON.stringify(this.dependentCells[i]) === JSON.parse(cell)) {
+                this.dependentCells.splice(i, 1);
+                break;
+            }
+        }
+    }
+
     compileStyles = () => {
         Object.keys(this.styles).forEach(style => {
             this.cell.style[style] = this.styles[style];
@@ -53,9 +79,9 @@ export class Cell extends BaseComponent {
 
         if (currentValueAsNumber) {
             this.addStyles({textAlign: 'right'});
-            this.value = currentValueAsNumber;
+            this.setValue(currentValueAsNumber);
         } else {
-            this.value = e.target.value;
+            this.setValue(e.target.value);
             this.addStyles({textAlign: 'left'});
         }
 
