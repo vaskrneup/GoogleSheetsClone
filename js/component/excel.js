@@ -79,26 +79,37 @@ export class Excel {
         this.modal = new Modal({});
     }
 
-    serialize = () => {
-        return {
-            name: document.getElementById('current-doc-name-input').value, // TODO: make param !!
+    serialize = (type = 'json') => {
+        switch (type) {
+            case 'json': {
+                return {
+                    name: document.getElementById('current-doc-name-input').value, // TODO: make param !!
 
-            numberOfRows: this.numberOfRows,
-            numberOfColumns: this.numberOfColumns,
-            tableContainerId: this.tableContainerId,
-            backgroundColorPickerId: this.backgroundColorPickerId,
-            textColorPickerId: this.textColorPickerId,
-            fontSizeInputId: this.fontSizeInputId,
-            boldBtnId: this.boldBtnId,
-            italicBtnId: this.italicBtnId,
-            crossedFontBtnId: this.crossedFontBtnId,
-            currentCellDisplayId: this.currentCellDisplayId,
-            formulaInputId: this.formulaInputId,
-            fontSelectorId: this.fontSelectorId,
-            graphPlotBtnId: this.graphPlotBtnId,
+                    numberOfRows: this.numberOfRows,
+                    numberOfColumns: this.numberOfColumns,
+                    tableContainerId: this.tableContainerId,
+                    backgroundColorPickerId: this.backgroundColorPickerId,
+                    textColorPickerId: this.textColorPickerId,
+                    fontSizeInputId: this.fontSizeInputId,
+                    boldBtnId: this.boldBtnId,
+                    italicBtnId: this.italicBtnId,
+                    crossedFontBtnId: this.crossedFontBtnId,
+                    currentCellDisplayId: this.currentCellDisplayId,
+                    formulaInputId: this.formulaInputId,
+                    fontSelectorId: this.fontSelectorId,
+                    graphPlotBtnId: this.graphPlotBtnId,
 
-            grids: this.grid.map(row => row.map(cell => cell.serialize()))
-        };
+                    grids: this.grid.map(row => row.map(cell => cell.serialize()))
+                };
+            }
+            case 'csv': {
+                return this.grid.map((row) => {
+                    return row.map(cell => {
+                        return cell.value;
+                    }).join(',');
+                }).join('\n');
+            }
+        }
     }
 
     handleKeyPress = (e) => {
@@ -589,7 +600,7 @@ export class Excel {
          
                 </tbody>
             </table>
-        `
+        `;
     }
 
     renderCells = () => {
@@ -598,15 +609,15 @@ export class Excel {
             tr.innerHTML = `<td class="disabled center-text table-row" id="row-${i}">${i + 1}</td>`;
 
             row.forEach(cell => {
-                this.tbody.appendChild(tr);
                 const td = document.createElement('td');
 
                 tr.appendChild(td);
 
                 cell.render();
                 td.appendChild(cell.cell);
-            })
-        })
+                this.tbody.appendChild(tr);
+            });
+        });
     }
 
     render = () => {

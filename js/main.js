@@ -4,6 +4,7 @@ import {Excel, getGridFromJson} from "./component/excel.js";
 // Selectors !!
 const documentNameDOM = document.getElementById('current-doc-name-input');
 const saveDataDOM = document.getElementById('save-data-btn');
+const saveDataCSV = document.getElementById('save-data-in-csv-format-btn');
 const uploadDataDOM = document.getElementById('upload-data-btn');
 
 // END Selectors !!
@@ -27,6 +28,10 @@ const main = () => {
 
     saveDataDOM.addEventListener('click', () => {
         downloadData('json', documentNameDOM.value + '.json', JSON.stringify(excel.serialize()));
+    });
+
+    saveDataCSV.addEventListener('click', () => {
+        downloadData('csv', documentNameDOM.value + '.csv', excel.serialize('csv'));
     });
 
     uploadDataDOM.addEventListener('change', (e) => {

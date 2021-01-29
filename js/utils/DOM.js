@@ -1,7 +1,11 @@
 export const downloadData = (filetype, filename, data) => {
     switch (filetype) {
         case ('json') : {
-            filetype = 'data:text/json;charset=utf-8,'
+            filetype = 'data:text/json;charset=utf-8,';
+            break;
+        }
+        case ('csv') : {
+            filetype = 'data:text/csv;charset=utf-8,';
         }
     }
 
