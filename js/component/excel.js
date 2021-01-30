@@ -256,7 +256,7 @@ export class Excel {
                 this.activeXAxis = newX;
                 this.activeYAxis = newY;
 
-                this.activeCell.cell.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});
+                this.activeCell.cell.scrollIntoView({block: "center", inline: "center"});
 
                 this.showActiveNavbar();
                 this.updateActiveCellDisplay();
