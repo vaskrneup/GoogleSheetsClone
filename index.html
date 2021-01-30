@@ -20,10 +20,11 @@
     <link rel="stylesheet" href="css/excel.css">
 
     <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
 
-<div class="theme-wrapper" id="body-wrapper" disabled>
+<div class="theme-wrapper" id="body-wrapper">
 
     <div class="navbar">
 
@@ -55,14 +56,23 @@
         </div>
 
         <div class="navbar-between">
-            <label>Background Color: <input type="color" value="#ffffff" id="background-color-picker"></label>
-            <label>Text Color: <input type="color" id="text-color-picker"></label>
-            <label>Font Size: <input class="font-size-input" type="number" max="50" min="5" id="font-size-input"
-                                     value="20"></label>
+            <label>
+                Background Color:
+                <input type="color" class="theme-input-field" value="#ffffff" id="background-color-picker">
+            </label>
+            <label>
+                Text Color:
+                <input type="color" class="theme-input-field" id="text-color-picker">
+            </label>
+            <label>
+                Font Size:
+                <input class="font-size-input theme-input-field" type="number" max="50" min="5" id="font-size-input"
+                       value="20">
+            </label>
 
             <label>
                 Font:
-                <select id="font-selector" class="font-selector"></select>
+                <select id="font-selector" class="font-selector theme-input-field"></select>
             </label>
 
             <button class="cell-style-change-btn" id="make-text-bold"><i class="fa fa-bold"></i></button>

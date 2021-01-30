@@ -70,6 +70,10 @@
     border: 1px solid grey;
 }
 
+.font-selector {
+    border-radius: 0;
+}
+
 .cell-style-change-btn {
     background-color: transparent;
     border: none;
