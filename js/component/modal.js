@@ -16,7 +16,16 @@ export class Modal extends BaseComponent {
         if (child) this.addModelBody(child);
         document.body.appendChild(this.modal);
 
+        this.addDefaultStyles();
         this.addEventListeners();
+    }
+
+    addDefaultStyles = () => {
+        this.addStyles({
+            backgroundColor: 'white',
+            border: '1px solid black',
+            boxShadow: '3px 3px 10px black',
+        });
     }
 
     addEventListeners = () => {

@@ -96,9 +96,6 @@ class Graph {
 
         this.modal.addModelBody(this.canvas);
         this.modal.addStyles({
-            backgroundColor: 'white',
-            border: '1px solid black',
-            boxShadow: '3px 3px 10px black',
             width: this.width + 'px',
             height: this.height + 'px',
         });

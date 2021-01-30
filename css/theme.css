@@ -28,25 +28,14 @@
     width: 50%;
     height: 30%;
     padding: 1% 1%;
-    background-color: rgba(11, 229, 76, 0.9);
+
+    background-color: #efefef;
+    border: 1px solid black;
+    box-shadow: 3px 3px 10px black;
+
 
     z-index: 10;
 }
-
-/*.theme-modal-bg {*/
-/*    position: absolute;*/
-/*    top: 45%;*/
-/*    left: 50%;*/
-/*    transform: translate(-50%, -50%);*/
-
-/*    width: 50%;*/
-/*    height: 30%;*/
-/*    padding: 1% 1%;*/
-/*    background-color: rgba(11, 229, 76, 0.9);*/
-
-/*    z-index: 9;*/
-/*    filter: blur(5px);*/
-/*}*/
 
 .theme-blur {
     filter: blur(3px);
