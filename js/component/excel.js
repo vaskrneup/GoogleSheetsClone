@@ -449,7 +449,11 @@ export class Excel {
     addEventListeners = () => {
         this.backgroundColorPicker.addEventListener('input', this.handleCellBackgroundColorChange);
         this.textColorPicker.addEventListener('input', this.handleCellTextColorChange);
+
         this.fontSizeInput.addEventListener('input', this.handleFontSizeChange);
+        this.fontSizeInput.addEventListener('focusin', () => this.isEditing = true);
+        this.fontSizeInput.addEventListener('focusout', () => this.isEditing = false);
+
         this.fontSelector.addEventListener('change', this.handleFontFamilyChange);
 
         this.italicBtn.addEventListener('click', this.handleItalicChange);
