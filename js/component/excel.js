@@ -29,29 +29,35 @@ export class Excel {
         },
     ]
     GRAPH_CREATION_FORM = `
-        <div>
+        <div class="graph-form-wrapper">
             <h2>Plot Graph from cell data</h2>
             
             <br>
             
             <div>
                 <h3>Row or column for X-Axis</h3>
-                <label><input type="text" id="x-axis-from" placeholder="X axis start cell"></label>
-                <label><input type="text" id="x-axis-to" placeholder="X axis end cell"></label>
+                <label><input class="theme-input-field" type="text" id="x-axis-from" placeholder="X axis start cell"></label>
+                <label><input class="theme-input-field" type="text" id="x-axis-to" placeholder="X axis end cell"></label>
             </div>
             
             <br>
             
             <div>
                 <h3>Row or column for Y-Axis</h3>
-                <label><input type="text" id="y-axis-from" placeholder="Y axis start cell"></label>
-                <label><input type="text" id="y-axis-to" placeholder="Y axis end cell"></label>
+                <label><input class="theme-input-field" type="text" id="y-axis-from" placeholder="Y axis start cell"></label>
+                <label><input class="theme-input-field" type="text" id="y-axis-to" placeholder="Y axis end cell"></label>
             </div>
             
             <br>
             
             <div>
-                <input type="button" value="Plot Graph" id="submit-graph-form">
+                <span class="theme-info">Press 'ESC' key to close the graph.</span>
+            </div>
+            
+            <br>
+            
+            <div>
+                <input type="button" value="Plot Graph" class="theme-button" id="submit-graph-form">
             </div>
         </div>
     `;

@@ -19,6 +19,15 @@
     background-color: #94b094;
 }
 
+.theme-input-field {
+    padding: 1px 3px;
+    outline: #007000 solid 1px;
+}
+
+.theme-input-field:focus {
+    box-shadow: 1px 1px 3px black;
+}
+
 .theme-modal {
     position: absolute;
     top: 45%;
@@ -33,8 +42,12 @@
     border: 1px solid black;
     box-shadow: 3px 3px 10px black;
 
-
     z-index: 10;
+}
+
+.theme-info {
+    font-size: 10px;
+    color: #888888;
 }
 
 .theme-blur {
