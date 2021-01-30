@@ -112,7 +112,7 @@ export class Excel {
         switch (type) {
             case 'json': {
                 return {
-                    name: document.getElementById('current-doc-name-input').value, // TODO: make param !!
+                    name: document.getElementById('current-doc-name-input').value,
 
                     numberOfRows: this.numberOfRows,
                     numberOfColumns: this.numberOfColumns,
@@ -409,40 +409,15 @@ export class Excel {
         this.modal.show();
 
         document.getElementById('submit-graph-form').addEventListener('click', this.handleGraphDetailForm);
-        // this.graphManager.render();
     }
 
     handleGraphDetailForm = () => {
-        // TODO: better algo !!
-        const xAxisValues = parseMathSyntax('=SUM(' + document.getElementById('x-axis-from').value + ':' + document.getElementById('x-axis-to').value + ')', '=SUM(');
-        const yAxisValues = parseMathSyntax('=SUM(' + document.getElementById('y-axis-from').value + ':' + document.getElementById('y-axis-to').value + ')', '=SUM(');
-
-        const graphXValues = [];
-        const graphYValues = [];
-
-        if (xAxisValues[0].x === xAxisValues[1].x) { // For vertical calculations !!
-            for (let i = xAxisValues[0].y; i <= xAxisValues[1].y; i++) {
-                const cellValue = this.grid[i][xAxisValues[0].x].value;
-                graphXValues.push(cellValue)
-            }
-        } else if (xAxisValues[0].y === xAxisValues[1].y) { // For horizontal calculations !!
-            for (let i = xAxisValues[0].x; i <= xAxisValues[1].x; i++) {
-                const cellValue = this.grid[xAxisValues[0].y][i].value;
-                graphXValues.push(cellValue)
-            }
-        }
-
-        if (yAxisValues[0].x === yAxisValues[1].x) { // For vertical calculations !!
-            for (let i = yAxisValues[0].y; i <= yAxisValues[1].y; i++) {
-                const cellValue = this.grid[i][yAxisValues[0].x].value;
-                graphYValues.push(cellValue)
-            }
-        } else if (yAxisValues[0].y === yAxisValues[1].y) { // For horizontal calculations !!
-            for (let i = yAxisValues[0].x; i <= yAxisValues[1].x; i++) {
-                const cellValue = this.grid[yAxisValues[0].y][i].value;
-                graphYValues.push(cellValue)
-            }
-        }
+        const graphXValues = this.getCellValuesFromRange(
+            '=SUM(' + document.getElementById('x-axis-from').value + ':' + document.getElementById('x-axis-to').value + ')'
+        );
+        const graphYValues = this.getCellValuesFromRange(
+            '=SUM(' + document.getElementById('y-axis-from').value + ':' + document.getElementById('y-axis-to').value + ')'
+        );
 
         this.graphManager.setValues(graphXValues, graphYValues);
         this.graphManager.render();
