@@ -317,118 +317,81 @@ export class Excel {
         this.activeCell.compileStyles();
     }
 
+    // FOR FORMULA USAGE !!
+    getCellValuesFromRange = (rawRange, onlyNumbers = true, formulaFor = '=SUM(', callback) => {
+        const parsedCoordinates = parseMathSyntax(rawRange, formulaFor);
+        const data = [];
+
+        const processIfDataPassesTest = (cell) => {
+            if (onlyNumbers) {
+                if (typeof cell.value === 'number') {
+                    data.push(cell.value);
+                    if (callback) callback(cell);
+                }
+            } else {
+                data.push(cell.value);
+                if (callback) callback(cell);
+            }
+        }
+
+        if (parsedCoordinates?.length > 0) {
+            if (parsedCoordinates[0].isTwoDigitSum === true) { // for comma separated values !!
+                for (let i = 0; i < parsedCoordinates.length; i++) {
+                    processIfDataPassesTest(this.grid[parsedCoordinates[i].y][parsedCoordinates[i].x]);
+                }
+            } else if (parsedCoordinates[0].isTwoDigitSum === false) { // For range of values !!
+
+                if (parsedCoordinates[0].x === parsedCoordinates[1].x) { // For vertical calculations !!
+                    for (let i = parsedCoordinates[0].y; i <= parsedCoordinates[1].y; i++) {
+                        processIfDataPassesTest(this.grid[i][parsedCoordinates[0].x]);
+                    }
+                } else if (parsedCoordinates[0].y === parsedCoordinates[1].y) { // For horizontal calculations !!
+                    for (let i = parsedCoordinates[0].x; i <= parsedCoordinates[1].x; i++) {
+                        processIfDataPassesTest(this.grid[parsedCoordinates[0].y][i]);
+                    }
+                }
+
+            }
+        }
+
+        return data;
+    }
+
     handleFormulaUsage = (e) => {
         this.ALLOWED_FORMULA.forEach(formulaFor => {
             if (e.target.value.includes(formulaFor)) {
-                const parsedData = parseMathSyntax(e.target.value, formulaFor);
+                const parsedData = this.getCellValuesFromRange(e.target.value, true, formulaFor, (cell) => {
+                    cell.addDependentCell({y: this.lastCell.yAxis, x: this.lastCell.xAxis});
+                });
+
                 let output = 0;
                 let isValidFormula = true;
 
-                if (parsedData !== null) {
-                    // for comma separated formulas !!
-                    if (parsedData[0].isTwoDigitSum) {
-                        for (let i = 0; i < parsedData.length; i++) {
-                            const cellValue = this.grid[parsedData[i].y][parsedData[i].x].value;
-                            this.grid[parsedData[i].y][parsedData[i].x].addDependentCell(
-                                {y: this.lastCell.yAxis, x: this.lastCell.xAxis}
-                            );
-
-                            switch (formulaFor) {
-                                case "=SUM(": {
-                                    output += cellValue;
-                                    break;
-                                }
-                                case "=AVERAGE(": {
-                                    output += cellValue;
-                                    if (i === parsedData.length - 1) output = output / parsedData.length;
-                                    break;
-                                }
-                                case "=COUNT(": {
-                                    if (typeof cellValue === 'number') output++;
-                                    break;
-                                }
-                                case "=MAX(": {
-                                    if (cellValue > output) output = cellValue;
-                                    break;
-                                }
-                                case "=MIN(": {
-                                    if (output === 0) output = cellValue;
-                                    if (cellValue < output) output = cellValue;
-                                    break;
-                                }
-                            }
+                if (parsedData.length > 0) {
+                    switch (formulaFor) {
+                        case "=SUM(": {
+                            output = parsedData.reduce((a, b) => a + b);
+                            break;
                         }
-                    } else { // for sequence of rows or columns !!
-                        if (parsedData[0].x === parsedData[1].x) { // For vertical calculations !!
-                            for (let i = parsedData[0].y; i <= parsedData[1].y; i++) {
-                                const cellValue = this.grid[i][parsedData[0].x].value;
-                                this.grid[i][parsedData[0].x].addDependentCell(
-                                    {y: this.lastCell.yAxis, x: this.lastCell.xAxis}
-                                );
-
-                                switch (formulaFor) {
-                                    case "=SUM(": {
-                                        output += cellValue;
-                                        break;
-                                    }
-                                    case "=AVERAGE(": {
-                                        output += cellValue;
-                                        if (parsedData[1].y === i) output = output / (parsedData[1].y - parsedData[0].y + 1);
-                                        break;
-                                    }
-                                    case "=COUNT(": {
-                                        if (typeof cellValue === "number") output++;
-                                        break;
-                                    }
-                                    case "=MAX(": {
-                                        if (cellValue > output) output = cellValue;
-                                        break;
-                                    }
-                                    case "=MIN(": {
-                                        if (i === parsedData[0].y) output = cellValue;
-                                        if (cellValue < output) output = cellValue;
-                                        break;
-                                    }
-                                }
-                            }
-                        } else if (parsedData[0].y === parsedData[1].y) { // For horizontal calculations !!
-                            for (let i = parsedData[0].x; i <= parsedData[1].x; i++) {
-                                const cellValue = this.grid[parsedData[0].y][i].value;
-                                this.grid[parsedData[0].y][i].addDependentCell(
-                                    {y: this.lastCell.yAxis, x: this.lastCell.xAxis}
-                                );
-
-                                switch (formulaFor) {
-                                    case "=SUM(": {
-                                        output += cellValue;
-                                        break;
-                                    }
-                                    case "=AVERAGE(": {
-                                        output += cellValue;
-                                        if (parsedData[1].x === i) output = output / (parsedData[1].x - parsedData[0].x + 1);
-                                        break;
-                                    }
-                                    case "=COUNT(": {
-                                        if (typeof cellValue === "number") {
-                                            output++;
-                                        }
-                                        break;
-                                    }
-                                    case "=MAX(": {
-                                        if (cellValue > output) output = cellValue;
-                                        break;
-                                    }
-                                    case "=MIN(": {
-                                        if (i === parsedData[0].x) output = cellValue;
-                                        if (cellValue < output) output = cellValue;
-                                        break;
-                                    }
-                                }
-                            }
-                        } else {
-                            isValidFormula = false;
+                        case "=AVERAGE(": {
+                            output = parsedData.reduce((a, b) => a + b) / parsedData.length;
+                            break;
+                        }
+                        case "=COUNT(": {
+                            output = parsedData.length;
+                            break;
+                        }
+                        case "=MAX(": {
+                            output = Math.max(...parsedData);
+                            break;
+                        }
+                        case "=MIN(": {
+                            output = Math.min(...parsedData);
+                            break;
                         }
                     }
+                } else {
+                    isValidFormula = false;
                 }
 
                 if (isValidFormula) {
