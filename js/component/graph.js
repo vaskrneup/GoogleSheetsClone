@@ -35,46 +35,6 @@ class Graph {
         this.yValues = y;
     }
 
-    _render = () => {
-
-    }
-
-    render = () => {
-        this._render();
-    }
-}
-
-
-export class DotGraph extends Graph {
-    constructor(xValues, yValues, xAxisLabel, yAxisLabel, dotSize = 1, width = 720, height = 480) {
-        super(xValues, yValues, xAxisLabel, yAxisLabel, width, height);
-
-        this.dotSize = dotSize;
-        this.modal = new Modal();
-    }
-
-    drawDots = () => {
-        this.ctx.save();
-        this.ctx.transform(1, 0, 0, -1, 0, this.height);
-
-        const xAxisGap = (this.width - this.padding * 2 - this.dotSize) / Math.max(...this.xValues);
-        const yAxisGap = (this.height - this.padding * 2 - this.dotSize) / Math.max(...this.yValues);
-        const shift = this.padding + this.dotSize;
-
-        for (let i = 0; i < this.xValues.length; i++) {
-            this.ctx.beginPath();
-            this.ctx.arc(
-                (this.xValues[i] * (xAxisGap)) + shift, (this.yValues[i] * yAxisGap) + shift,
-                this.dotSize, 0, 2 * Math.PI
-            );
-            this.ctx.stroke();
-            this.ctx.fill();
-            this.ctx.closePath();
-        }
-
-        this.ctx.restore();
-    }
-
     writeLabels = () => {
         this.ctx.restore();
         // For X Axis !!
@@ -129,10 +89,7 @@ export class DotGraph extends Graph {
         this.ctx.closePath();
     }
 
-    render = () => {
-        this._render();
-
-        this.drawDots();
+    _render = () => {
         this.writeLabels();
         this.writeAxisValues();
         this.drawAxisLines();
@@ -147,5 +104,47 @@ export class DotGraph extends Graph {
         });
         this.modal.compileStyles();
         this.modal.show();
+    }
+
+    render = () => {
+        this._render();
+    }
+}
+
+
+export class DotGraph extends Graph {
+    constructor(xValues, yValues, xAxisLabel, yAxisLabel, dotSize = 1, width = 720, height = 480) {
+        super(xValues, yValues, xAxisLabel, yAxisLabel, width, height);
+
+        this.dotSize = dotSize;
+        this.modal = new Modal();
+    }
+
+    drawDots = () => {
+        this.ctx.save();
+        this.ctx.transform(1, 0, 0, -1, 0, this.height);
+
+        const xAxisGap = (this.width - this.padding * 2 - this.dotSize) / Math.max(...this.xValues);
+        const yAxisGap = (this.height - this.padding * 2 - this.dotSize) / Math.max(...this.yValues);
+        const shift = this.padding + this.dotSize;
+
+        for (let i = 0; i < this.xValues.length; i++) {
+            this.ctx.beginPath();
+            this.ctx.arc(
+                (this.xValues[i] * (xAxisGap)) + shift, (this.yValues[i] * yAxisGap) + shift,
+                this.dotSize, 0, 2 * Math.PI
+            );
+            this.ctx.stroke();
+            this.ctx.fill();
+            this.ctx.closePath();
+        }
+
+        this.ctx.restore();
+    }
+
+    render = () => {
+        this.drawDots();
+
+        this._render();
     }
 }

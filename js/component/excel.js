@@ -28,11 +28,40 @@ export class Excel {
             displayName: 'Monospace'
         },
     ]
+    GRAPH_CREATION_FORM = `
+        <div>
+            <h2>Plot Graph from cell data</h2>
+            
+            <br>
+            
+            <div>
+                <h3>Row or column for X-Axis</h3>
+                <label><input type="text" id="x-axis-from" placeholder="X axis start cell"></label>
+                <label><input type="text" id="x-axis-to" placeholder="X axis end cell"></label>
+            </div>
+            
+            <br>
+            
+            <div>
+                <h3>Row or column for Y-Axis</h3>
+                <label><input type="text" id="y-axis-from" placeholder="Y axis start cell"></label>
+                <label><input type="text" id="y-axis-to" placeholder="Y axis end cell"></label>
+            </div>
+            
+            <br>
+            
+            <div>
+                <input type="button" value="Plot Graph" id="submit-graph-form">
+            </div>
+        </div>
+    `;
 
-    constructor(numberOfRows, numberOfColumns, tableContainerId,
-                backgroundColorPickerId, textColorPickerId, fontSizeInputId,
-                boldBtnId, italicBtnId, crossedFontBtnId,
-                currentCellDisplayId, formulaInputId, fontSelectorId, graphPlotBtnId, grid) {
+    constructor(
+        numberOfRows, numberOfColumns, tableContainerId,
+        backgroundColorPickerId, textColorPickerId, fontSizeInputId,
+        boldBtnId, italicBtnId, crossedFontBtnId,
+        currentCellDisplayId, formulaInputId, fontSelectorId, graphPlotBtnId, grid
+    ) {
         this.numberOfRows = numberOfRows;
         this.numberOfColumns = numberOfColumns;
 
@@ -112,52 +141,32 @@ export class Excel {
         }
     }
 
+
     handleKeyPress = (e) => {
+        const handleCommonCommandsOnKeyPress = (x, y) => {
+            if (!this.isEditing) {
+                this.changeCell(x, y);
+                this.showActiveCell();
+                this.blurLastCell();
+            }
+        }
+
         switch (e.code) {
             case 'ArrowUp': {
-                if (!this.isEditing) {
-                    this.changeCell(
-                        this.activeXAxis,
-                        this.activeYAxis - 1
-                    );
-                    this.showActiveCell();
-                    this.blurLastCell();
-                }
+                handleCommonCommandsOnKeyPress(this.activeXAxis, this.activeYAxis - 1);
                 break;
             }
             case 'ArrowDown': {
-                if (!this.isEditing) {
-                    this.changeCell(
-                        this.activeXAxis,
-                        this.activeYAxis + 1
-                    );
-                    this.showActiveCell();
-                    this.blurLastCell();
-                }
+                handleCommonCommandsOnKeyPress(this.activeXAxis, this.activeYAxis + 1);
                 break;
             }
 
             case 'ArrowRight': {
-                if (!this.isEditing) {
-                    this.changeCell(
-                        this.activeXAxis + 1,
-                        this.activeYAxis
-                    );
-                    this.showActiveCell();
-                    this.blurLastCell();
-                }
+                handleCommonCommandsOnKeyPress(this.activeXAxis + 1, this.activeYAxis);
                 break;
             }
             case 'ArrowLeft': {
-                if (!this.isEditing) {
-                    this.changeCell(
-                        this.activeXAxis - 1,
-                        this.activeYAxis
-                    );
-                    this.showActiveCell();
-                    this.blurLastCell();
-                }
-                // e.preventDefault()
+                handleCommonCommandsOnKeyPress(this.activeXAxis - 1, this.activeYAxis);
                 break;
             }
 
@@ -301,6 +310,13 @@ export class Excel {
         this.activeCell.compileStyles();
     }
 
+    handleFontFamilyChange = (e) => {
+        this.activeCell.addStyles({
+            fontFamily: e.target.value
+        });
+        this.activeCell.compileStyles();
+    }
+
     handleFormulaUsage = (e) => {
         this.ALLOWED_FORMULA.forEach(formulaFor => {
             if (e.target.value.includes(formulaFor)) {
@@ -425,43 +441,8 @@ export class Excel {
         });
     }
 
-    handleFontFamilyChange = (e) => {
-        this.activeCell.addStyles({
-            fontFamily: e.target.value
-        });
-        this.activeCell.compileStyles();
-    }
-
     handleGraphBtnClick = () => {
-        const formHTML = `
-        <div>
-            <h2>Plot Graph from cell data</h2>
-            
-            <br>
-            
-            <div>
-                <h3>Row or column for X-Axis</h3>
-                <label><input type="text" id="x-axis-from" placeholder="X axis start cell"></label>
-                <label><input type="text" id="x-axis-to" placeholder="X axis end cell"></label>
-            </div>
-            
-            <br>
-            
-            <div>
-                <h3>Row or column for Y-Axis</h3>
-                <label><input type="text" id="y-axis-from" placeholder="Y axis start cell"></label>
-                <label><input type="text" id="y-axis-to" placeholder="Y axis end cell"></label>
-            </div>
-            
-            <br>
-            
-            <div>
-                <input type="button" value="Plot Graph" id="submit-graph-form">
-            </div>
-        </div>
-        `;
-
-        this.modal.addModelBody(formHTML, true);
+        this.modal.addModelBody(this.GRAPH_CREATION_FORM, true);
         this.modal.show();
 
         document.getElementById('submit-graph-form').addEventListener('click', this.handleGraphDetailForm);
@@ -642,12 +623,12 @@ export class Excel {
 export const getGridFromJson = (data) => data.grids.map(row => row.map(cell => createCellFromJson(cell)))
 
 
-export const createExcelFromJson = (data) => {
-    return new Excel(
-        data.numberOfRows, data.numberOfColumns,
-        data.tableContainerId,
-        data.backgroundColorPickerId, data.textColorPickerId, data.fontSizeInputId,
-        data.boldBtnId, data.italicBtnId, data.crossedFontBtnId, data.currentCellDisplayId,
-        data.formulaInputId, data.fontSelectorId, getGridFromJson(data)
-    );
-}
+// export const createExcelFromJson = (data) => {
+//     return new Excel(
+//         data.numberOfRows, data.numberOfColumns,
+//         data.tableContainerId,
+//         data.backgroundColorPickerId, data.textColorPickerId, data.fontSizeInputId,
+//         data.boldBtnId, data.italicBtnId, data.crossedFontBtnId, data.currentCellDisplayId,
+//         data.formulaInputId, data.fontSelectorId, getGridFromJson(data)
+//     );
+// }

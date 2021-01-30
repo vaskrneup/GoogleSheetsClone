@@ -44,6 +44,4 @@ export class Modal extends BaseComponent {
     show = () => this.modal.style.display = 'block';
 
     hide = () => this.modal.style.display = 'none';
-
-    destroy = () => this.modal.remove();
 }
