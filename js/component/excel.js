@@ -250,6 +250,10 @@ export class Excel {
         this.formulaInput.value = this.activeCell.formula || this.activeCell.value;
     }
 
+    updateNumberOfRows = () => {
+        if (this.activeYAxis >= this.numberOfRows - 1) this.addNewRows(10);
+    }
+
     changeCell = (newX, newY) => {
         if (!this.isEditing) {
             if (!((newX < 0) || (newX >= this.numberOfColumns) || (newY < 0) || (newY >= this.numberOfRows))) {
@@ -266,6 +270,7 @@ export class Excel {
                 this.showActiveNavbar();
                 this.updateActiveCellDisplay();
                 this.updateFormulaBar();
+                this.updateNumberOfRows();
             }
         }
     }
@@ -537,19 +542,27 @@ export class Excel {
         return tHead;
     }
 
-    createRowsAndColumns = () => {
-        for (let row_count = 0; row_count < this.numberOfRows; row_count++) {
+    getNewRows = (numberOfRows) => {
+        const grid = [];
+
+        for (let rowCount = 0; rowCount < numberOfRows; rowCount++) {
             const row = [];
 
-            for (let col_count = 0; col_count < this.numberOfColumns; col_count++) {
-                const cell = new Cell(col_count, row_count);
+            for (let colCount = 0; colCount < this.numberOfColumns; colCount++) {
+                const cell = new Cell(this.grid.length + colCount, this.grid.length + rowCount);
                 cell.cell.addEventListener('change', this.handleFormulaUsage);
                 cell.cell.addEventListener('change', this.handleUpdateDependentCell);
                 row.push(cell);
             }
 
-            this.grid.push(row);
+            grid.push(row);
         }
+
+        return grid;
+    }
+
+    createRowsAndColumns = () => {
+        this.grid = [...this.grid, ...this.getNewRows(this.numberOfRows)];
     }
     // END CREATE DOM OBJECTS !!
 
@@ -591,10 +604,13 @@ export class Excel {
         `;
     }
 
-    renderCells = () => {
-        this.grid.forEach((row, i) => {
+    renderCells = (grid) => {
+        const startCountFrom = grid ? this.grid.length - grid.length : 0;
+        grid = grid || this.grid;
+
+        grid.forEach((row, i) => {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td class="disabled center-text table-row" id="row-${i}">${i + 1}</td>`;
+            tr.innerHTML = `<td class="disabled center-text table-row" id="row-${i + startCountFrom}">${i + 1 + startCountFrom}</td>`;
 
             row.forEach(cell => {
                 const td = document.createElement('td');
@@ -606,6 +622,14 @@ export class Excel {
                 this.tbody.appendChild(tr);
             });
         });
+    }
+
+
+    addNewRows = (numberOfRows) => {
+        const newRows = this.getNewRows(numberOfRows);
+        this.grid = [...this.grid, ...newRows];
+        this.numberOfRows += numberOfRows;
+        this.renderCells(newRows);
     }
 
     render = () => {
