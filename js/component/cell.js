@@ -73,9 +73,12 @@ export class Cell extends BaseComponent {
 
     setDefaultStyles = () => {
         this.addStyles({
-            minHeight: '20px',
-            width: '300px',
-            fontSize: '16px'
+            ...{
+                minHeight: '20px',
+                width: '300px',
+                fontSize: '16px'
+            },
+            ...this.styles
         });
     }
 
