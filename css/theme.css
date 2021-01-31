@@ -23,6 +23,8 @@
     padding: 1px 3px;
     outline: #007000 solid 1px;
     border: none;
+    margin: 3px;
+    text-align: center;
 }
 
 .theme-input-field:focus {

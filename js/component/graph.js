@@ -35,6 +35,11 @@ class Graph {
         this.yValues = y;
     }
 
+    setLabels = (xLabel, yLabel) => {
+        this.xAxisLabel = xLabel;
+        this.yAxisLabel = yLabel;
+    }
+
     writeLabels = () => {
         this.ctx.restore();
         // For X Axis !!
@@ -141,6 +146,43 @@ export class DotGraph extends Graph {
 
     render = () => {
         this.drawDots();
+
+        this._render();
+    }
+}
+
+
+export class LineGraph extends Graph {
+    constructor(xValues, yValues, xAxisLabel, yAxisLabel, lineSize = 1, width = 720, height = 480) {
+        super(xValues, yValues, xAxisLabel, yAxisLabel, width, height);
+
+        this.lineSize = lineSize;
+        this.modal = new Modal();
+    }
+
+    drawLines = () => {
+        this.ctx.save();
+        this.ctx.transform(1, 0, 0, -1, 0, this.height);
+
+        const xAxisGap = (this.width - this.padding * 2 - this.lineSize) / Math.max(...this.xValues);
+        const yAxisGap = (this.height - this.padding * 2 - this.lineSize) / Math.max(...this.yValues);
+        const shift = this.padding + this.lineSize;
+
+        this.ctx.beginPath();
+        for (let i = 0; i < this.xValues.length; i++) {
+            this.ctx.lineTo(
+                (this.xValues[i] * (xAxisGap)) + shift, (this.yValues[i] * yAxisGap) + shift,
+            );
+        }
+        this.ctx.stroke();
+        this.ctx.closePath();
+
+
+        this.ctx.restore();
+    }
+
+    render = () => {
+        this.drawLines();
 
         this._render();
     }

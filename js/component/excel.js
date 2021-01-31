@@ -1,5 +1,5 @@
 import {Cell, createCellFromJson} from "./cell.js";
-import {DotGraph} from "./graph.js";
+import {DotGraph, LineGraph} from "./graph.js";
 import {parseMathSyntax} from "../utils/parser.js";
 import {Modal} from "./modal.js";
 
@@ -38,6 +38,7 @@ export class Excel {
                 <h3>Row or column for X-Axis</h3>
                 <label><input class="theme-input-field" type="text" id="x-axis-from" placeholder="X axis start cell"></label>
                 <label><input class="theme-input-field" type="text" id="x-axis-to" placeholder="X axis end cell"></label>
+                <label><input class="theme-input-field" type="text" id="x-axis-label" placeholder="X axis label"></label>
             </div>
             
             <br>
@@ -46,6 +47,7 @@ export class Excel {
                 <h3>Row or column for Y-Axis</h3>
                 <label><input class="theme-input-field" type="text" id="y-axis-from" placeholder="Y axis start cell"></label>
                 <label><input class="theme-input-field" type="text" id="y-axis-to" placeholder="Y axis end cell"></label>
+                <label><input class="theme-input-field" type="text" id="y-axis-label" placeholder="Y axis label"></label>
             </div>
             
             <br>
@@ -57,6 +59,10 @@ export class Excel {
             <br>
             
             <div>
+                <select id="graph-type-selector">
+                    <option value="DOT">Dot Graph</option>
+                    <option value="LINE">Line Graph</option>
+                </select>
                 <input type="button" value="Plot Graph" class="theme-button" id="submit-graph-form">
             </div>
         </div>
@@ -102,7 +108,10 @@ export class Excel {
 
         this.grid = grid || [];
 
-        this.graphManager = new DotGraph(null, null, 'Number', 'Values');
+        this.graphManager = {
+            lineGraph: new LineGraph(null, null, 'Number', 'Values'),
+            dotGraph: new DotGraph(null, null, 'Number', 'Values'),
+        };
 
         this.lastActiveXAxis = 0;
         this.lastActiveYAxis = 0;
@@ -479,8 +488,20 @@ export class Excel {
             '=SUM(' + yAxisStartField.value + ':' + yAxisEndField.value + ')'
         );
 
-        this.graphManager.setValues(graphXValues, graphYValues);
-        this.graphManager.render();
+        const xAxisLabel = document.getElementById('x-axis-label').value;
+        const yAxisLabel = document.getElementById('y-axis-label').value;
+
+        const graphType = document.getElementById('graph-type-selector').value;
+
+        if (graphType === 'DOT') {
+            this.graphManager.dotGraph.setValues(graphXValues, graphYValues);
+            this.graphManager.dotGraph.setLabels(xAxisLabel, yAxisLabel);
+            this.graphManager.dotGraph.render();
+        } else if (graphType === 'LINE') {
+            this.graphManager.lineGraph.setValues(graphXValues, graphYValues);
+            this.graphManager.lineGraph.setLabels(xAxisLabel, yAxisLabel);
+            this.graphManager.lineGraph.render();
+        }
         this.modal.hide();
     }
 
