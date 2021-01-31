@@ -112,6 +112,9 @@ export class Excel {
 
         this.isEditing = false;
         this.modal = new Modal({});
+
+        this.modalFieldsListenerAdded = false;
+        this.isWorkingInExternalInput = false; // To disable key controls when editing non cell fields !!
     }
 
     serialize = (type = 'json') => {
@@ -149,6 +152,8 @@ export class Excel {
 
 
     handleKeyPress = (e) => {
+        if (this.isWorkingInExternalInput) return;
+
         const handleCommonCommandsOnKeyPress = (x, y) => {
             if (!this.isEditing) {
                 this.changeCell(x, y);
@@ -414,15 +419,37 @@ export class Excel {
         this.modal.addModelBody(this.GRAPH_CREATION_FORM, true);
         this.modal.show();
 
+        const xAxisStartField = document.getElementById('x-axis-from');
+        const xAxisEndField = document.getElementById('x-axis-to');
+
+        const yAxisStartField = document.getElementById('y-axis-from');
+        const yAxisEndField = document.getElementById('y-axis-to');
+
+        this.isWorkingInExternalInput = true;
+        xAxisStartField.focus();
+
+        if (!this.modalFieldsListenerAdded) {
+            this.addEventListenersToExternalFields([
+                xAxisStartField, xAxisEndField, yAxisStartField, yAxisEndField
+            ]);
+            this.modalFieldsListenerAdded = true;
+        }
+
         document.getElementById('submit-graph-form').addEventListener('click', this.handleGraphDetailForm);
     }
 
     handleGraphDetailForm = () => {
+        const xAxisStartField = document.getElementById('x-axis-from');
+        const xAxisEndField = document.getElementById('x-axis-to');
+
+        const yAxisStartField = document.getElementById('y-axis-from');
+        const yAxisEndField = document.getElementById('y-axis-to');
+
         const graphXValues = this.getCellValuesFromRange(
-            '=SUM(' + document.getElementById('x-axis-from').value + ':' + document.getElementById('x-axis-to').value + ')'
+            '=SUM(' + xAxisStartField.value + ':' + xAxisEndField.value + ')'
         );
         const graphYValues = this.getCellValuesFromRange(
-            '=SUM(' + document.getElementById('y-axis-from').value + ':' + document.getElementById('y-axis-to').value + ')'
+            '=SUM(' + yAxisStartField.value + ':' + yAxisEndField.value + ')'
         );
 
         this.graphManager.setValues(graphXValues, graphYValues);
@@ -446,14 +473,25 @@ export class Excel {
         });
     }
 
+    addEventListenersToExternalFields = (fields) => {
+        fields.forEach(field => {
+            field.addEventListener('focusin', () => {
+                this.isEditing = true;
+                this.isWorkingInExternalInput = true;
+            });
+            field.addEventListener('focusout', () => {
+                this.isEditing = false;
+                this.isWorkingInExternalInput = false;
+            });
+        });
+    }
+
     addEventListeners = () => {
         this.backgroundColorPicker.addEventListener('input', this.handleCellBackgroundColorChange);
         this.textColorPicker.addEventListener('input', this.handleCellTextColorChange);
 
         this.fontSizeInput.addEventListener('input', this.handleFontSizeChange);
-        this.fontSizeInput.addEventListener('focusin', () => this.isEditing = true);
-        this.fontSizeInput.addEventListener('focusout', () => this.isEditing = false);
-
+        this.addEventListenersToExternalFields([this.fontSizeInput]);
         this.fontSelector.addEventListener('change', this.handleFontFamilyChange);
 
         this.italicBtn.addEventListener('click', this.handleItalicChange);
