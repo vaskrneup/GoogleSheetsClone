@@ -5,7 +5,7 @@ import {Modal} from "./modal.js";
 
 export class Excel {
     LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    ALLOWED_FORMULA = ['=SUM(', '=AVERAGE(', '=COUNT(', '=MIN(', '=MAX('];
+    ALLOWED_FORMULA = ['=SUM(', '=AVERAGE(', '=COUNT(', '=MIN(', '=MAX(', '=FILTER_ONLY_STRING(', '=FILTER_ONLY_NUM('];
     AVAILABLE_FONTS = [
         {
             value: 'sans-serif',
@@ -376,6 +376,28 @@ export class Excel {
     handleFormulaUsage = (e) => {
         this.ALLOWED_FORMULA.forEach(formulaFor => {
             if (e.target.value.includes(formulaFor)) {
+                if (formulaFor === '=FILTER_ONLY_NUM(') {
+                    this.getCellValuesFromRange(e.target.value, false, formulaFor, (cell) => {
+                        if (typeof cell.value !== 'number') {
+                            cell.setValue('');
+                            cell.cell.value = '';
+                        }
+                    });
+                    this.lastCell.setValue('');
+                    this.lastCell.cell.value = '';
+                    return;
+                } else if (formulaFor === '=FILTER_ONLY_STRING(') {
+                    this.getCellValuesFromRange(e.target.value, false, formulaFor, (cell) => {
+                        if (typeof cell.value !== 'string') {
+                            cell.setValue('');
+                            cell.cell.value = '';
+                        }
+                    });
+                    this.lastCell.setValue('');
+                    this.lastCell.cell.value = '';
+                    return;
+                }
+
                 const parsedData = this.getCellValuesFromRange(e.target.value, true, formulaFor, (cell) => {
                     cell.addDependentCell({y: this.lastCell.yAxis, x: this.lastCell.xAxis});
                 });
@@ -485,6 +507,11 @@ export class Excel {
         }
     }
 
+    handleColumnHeaderClick = (e) => {
+        e.preventDefault();
+
+    }
+
     addEventListenersForFallbackToCellFromInput = (fields) => {
         fields.forEach(field => {
             field.addEventListener('keydown', this.handleFallbackToCellFromInput);
@@ -519,6 +546,9 @@ export class Excel {
 
         document.addEventListener('keydown', this.handleKeyPress);
         document.addEventListener('cellChangedPosition', this.handleCellClick);
+        document.querySelectorAll('.col').forEach(col => {
+            col.addEventListener('contextmenu', this.handleColumnHeaderClick);
+        });
 
         this.addEventListenersToExternalFields([
             this.backgroundColorPicker, this.textColorPicker, this.fontSizeInput,
@@ -536,7 +566,7 @@ export class Excel {
         let tHead = '';
 
         for (let i = 0; i < this.numberOfColumns; i++) {
-            tHead += `<th class="disabled" id="col-${i}">${this.LETTERS[i]}</th>`;
+            tHead += `<th class="disabled col" id="col-${i}">${this.LETTERS[i]}</th>`;
         }
 
         return tHead;
