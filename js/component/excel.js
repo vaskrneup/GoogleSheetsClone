@@ -473,6 +473,19 @@ export class Excel {
         });
     }
 
+    handleFallbackToCellFromInput = (e) => {
+        if (e.code === 'Enter') {
+            this.isWorkingInExternalInput = false;
+            e.target.blur();
+        }
+    }
+
+    addEventListenersForFallbackToCellFromInput = (fields) => {
+        fields.forEach(field => {
+            field.addEventListener('keydown', this.handleFallbackToCellFromInput);
+        });
+    }
+
     addEventListenersToExternalFields = (fields) => {
         fields.forEach(field => {
             field.addEventListener('focusin', () => {
@@ -491,7 +504,6 @@ export class Excel {
         this.textColorPicker.addEventListener('input', this.handleCellTextColorChange);
 
         this.fontSizeInput.addEventListener('input', this.handleFontSizeChange);
-        this.addEventListenersToExternalFields([this.fontSizeInput]);
         this.fontSelector.addEventListener('change', this.handleFontFamilyChange);
 
         this.italicBtn.addEventListener('click', this.handleItalicChange);
@@ -502,6 +514,15 @@ export class Excel {
 
         document.addEventListener('keydown', this.handleKeyPress);
         document.addEventListener('cellChangedPosition', this.handleCellClick);
+
+        this.addEventListenersToExternalFields([
+            this.backgroundColorPicker, this.textColorPicker, this.fontSizeInput,
+            this.fontSelector,
+        ]);
+        this.addEventListenersForFallbackToCellFromInput([
+            this.backgroundColorPicker, this.textColorPicker, this.fontSizeInput,
+            this.fontSelector
+        ]);
     }
 
     // =================================================================================================================
