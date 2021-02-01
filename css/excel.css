@@ -12,6 +12,7 @@
     /*outline: 1px outset blue;*/
     background-color: #f3f3f3;
     border-collapse: collapse;
+    resize: both;
 }
 
 .active-excel-navbar {

@@ -31,12 +31,13 @@
 }
 
 .current-doc-name-input {
-    padding: 2px;
-
+    all: unset;
     width: 190px;
-    height: 20px;
+    height: 23px;
 
     font-size: 20px;
+    resize: none;
+    white-space: nowrap;
 }
 
 .current-doc-name-input:focus {
