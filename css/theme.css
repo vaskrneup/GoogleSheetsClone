@@ -38,7 +38,7 @@
     transform: translate(-50%, -50%);
 
     width: 50%;
-    height: 30%;
+    /*height: 30%;*/
     padding: 1% 1%;
 
     background-color: #efefef;
@@ -55,4 +55,9 @@
 
 .theme-blur {
     filter: blur(3px);
+}
+
+.theme-emphasis {
+    color: #393939;
+    font-weight: bold;
 }

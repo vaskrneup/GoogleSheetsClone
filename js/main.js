@@ -1,11 +1,99 @@
 import {downloadData, readFile} from "./utils/DOM.js";
 import {Excel, getGridFromJson} from "./component/excel.js";
+import {Modal} from "./component/modal.js";
+
+// HTML CODE !!
+const helpSectionHTML = `
+    <h2 class="help-modal-header center-text">HELP</h2>
+
+    <div class="help-modal-body">
+        <div class="content-section">
+            <div class="help-col">
+                <h3 class="help-section-title sub-header">HOW TO USE FORMULA</h3>
+                <ul class="help-list">
+                    <li>=FORMULA_FOR(A1:A3)</li>
+                    <li>=FORMULA_FOR(A1:C1)</li>
+                    <li>=FORMULA_FOR(A1,A2,A3)</li>
+                    <li>=FORMULA_FOR(A1,A2,A3)</li>
+                </ul>
+                <br>
+                <h2 class="theme-emphasis sub-header">NOTE</h2>
+                <p>
+                    \`<span class="theme-emphasis">:</span>\`
+                    will be used for selecting range of vertical or horizontal cells.
+                </p>
+                <p>
+                    \`<span class="theme-emphasis">,</span>\`
+                    will be used for selecting particular cell.
+                </p>
+            </div>
+
+            <div class="help-col">
+                <h3 class="help-section-title sub-header">AVAILABLE FORMULA</h3>
+
+                <ul class="help-list">
+                    <li>
+                        <span class="formula">SUM</span>
+                        <span class="italic">#Gives Sum of given cells.</span>
+                    </li>
+                    <li>
+                        <span class="formula">AVERAGE</span>
+                        <span class="italic">#Gives Average of given cells.</span>
+                    </li>
+                    <li>
+                        <span class="formula">COUNT</span>
+                        <span class="italic">#Gives Count of Valid Number in given cells.</span>
+                    </li>
+                    <li>
+                        <span class="formula">MIN</span>
+                        <span class="italic">#Gives Minimum Number in given cells.</span>
+                    </li>
+                    <li>
+                        <span class="formula">MAX</span>
+                        <span class="italic">#Gives Maximum Number in given cells.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="help-col">
+                <h3 class="help-section-title sub-header">CREATING GRAPHS</h3>
+
+                <ul class="help-list">
+                    <li>Click on Plot graph to create either line or dot graph.</li>
+                    <li>Provide Cell Range for Both X and Y values.</li>
+                    <li>Provide label for graphs.</li>
+                    <li>Select Graph type from dropdown.</li>
+                    <li>Click on plot to plot the graph.</li>
+                    <li>You may press \`ESC\` Key to close graph.</li>
+                </ul>
+            </div>
+
+            <div class="help-col">
+                <h3 class="help-section-title sub-header">USING FILTERS</h3>
+
+                <ul class="help-list">
+                    <li>Filter are similar in syntax to \`FORMULA\`.</li>
+                    <li>Use \`FILTER_ONLY_STRING\` to Keep only strings.</li>
+                    <li>Use \`FILTER_ONLY_NUM\` to Keep only Numbers.</li>
+                    <li>
+                        USE \`=FILTER_FOR(A1:A3)\` OR \`=FILTER_FOR(A1,A2,A3)\`, Filter will be used in selected rows.
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <br>
+        <p class="center-text">Press \`ESC\` Key to close Help Section.</p>
+    </div>
+`
 
 // Selectors !!
 const documentNameDOM = document.getElementById('current-doc-name-input');
 const saveDataDOM = document.getElementById('save-data-btn');
 const saveDataCSV = document.getElementById('save-data-in-csv-format-btn');
 const uploadDataDOM = document.getElementById('upload-data-btn');
+const htmlBtn = document.getElementById('help-btn');
 // END Selectors !!
 
 let excel = new Excel(
@@ -14,6 +102,8 @@ let excel = new Excel(
     'make-text-bold', 'make-text-italic', 'make-text-strikethrough',
     'current-cell', 'formula-input', 'font-selector', 'plot-graph-btn'
 );
+const helpSectionModal = new Modal({});
+helpSectionModal.addModelBody(helpSectionHTML, true);
 
 const handleSaveDataAsJSON = () => {
     downloadData('json', documentNameDOM.value + '.json', JSON.stringify(excel.serialize()));
@@ -58,6 +148,8 @@ const functionHandleEvents = () => {
     saveDataDOM.addEventListener('click', handleSaveDataAsJSON);
     saveDataCSV.addEventListener('click', handleSaveDataAsCSV);
     uploadDataDOM.addEventListener('change', handleLoadDataFromFile);
+
+    htmlBtn.addEventListener('click', () => helpSectionModal.show());
 }
 
 const main = () => {

@@ -1,0 +1,48 @@
+.help-modal {
+
+}
+
+.help-modal-header {
+    border-bottom: 1px solid grey;
+}
+
+.help-modal-body {
+    padding: 5px;
+    color: grey;
+}
+
+.help-col {
+    float: left;
+    width: 50%;
+}
+
+.help-section-title {
+    color: #7e7e7e;
+}
+
+.help-list {
+    text-align: left;
+    margin-left: 5px;
+    color: grey;
+    list-style: none;
+}
+
+.help-list li {
+    padding: 2px 0;
+}
+
+.sub-header {
+    margin-bottom: 5px;
+}
+
+
+.content-section {
+    border-bottom: 1px solid grey;
+    overflow: hidden;
+    padding: 5px 0;
+}
+
+.italic {
+    font-style: italic;
+    color: #393939;
+}
