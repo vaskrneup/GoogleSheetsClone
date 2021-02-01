@@ -192,6 +192,7 @@ export class Excel {
             }
 
             case 'Enter': {
+                e.preventDefault();
                 if (!this.isEditing) {
                     this.focusCurrentCell();
                 } else {

@@ -24,7 +24,11 @@ const handleSaveDataAsCSV = () => {
 }
 
 const changeInputSizeOnInput = (e) => {
-    e.target.style.width = e.target.scrollWidth + 'px';
+    e.target.style.width = '0px';
+
+    if (e.target.scrollWidth >= 400) e.target.style.width = 400 + 'px';
+    else if (e.target.scrollWidth <= 30) e.target.style.width = 30 + 'px';
+    else e.target.style.width = e.target.scrollWidth + 'px';
 }
 
 const handleLoadDataFromFile = (e) => {
@@ -41,6 +45,15 @@ const handleLoadDataFromFile = (e) => {
 
 const functionHandleEvents = () => {
     documentNameDOM.addEventListener('input', changeInputSizeOnInput);
+    documentNameDOM.addEventListener('focusin', () => excel.isEditing = true);
+    documentNameDOM.addEventListener('focusout', () => {
+        excel.isEditing = false;
+        if (!documentNameDOM.value) documentNameDOM.value = 'Untitled Document';
+        changeInputSizeOnInput({target: documentNameDOM});
+    });
+    documentNameDOM.addEventListener('keydown', (e) => {
+        if (e.code === 'Enter') documentNameDOM.blur();
+    });
 
     saveDataDOM.addEventListener('click', handleSaveDataAsJSON);
     saveDataCSV.addEventListener('click', handleSaveDataAsCSV);
