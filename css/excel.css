@@ -9,10 +9,14 @@
 }
 
 .active-cell {
-    /*outline: 1px outset blue;*/
+    outline: 2px outset blue;
     background-color: #f3f3f3;
     border-collapse: collapse;
     resize: both;
+
+    position: relative;
+    top: 2px;
+    left: 1px;
 }
 
 .active-excel-navbar {
