@@ -2,6 +2,7 @@ import {Cell, createCellFromJson} from "./cell.js";
 import {DotGraph, LineGraph} from "./graph.js";
 import {parseMathSyntax} from "../utils/parser.js";
 import {Modal} from "./modal.js";
+import {RightClickMenu} from "./rightClickMenu.js";
 
 export class Excel {
     LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';

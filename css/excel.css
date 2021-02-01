@@ -9,7 +9,7 @@
 }
 
 .active-cell {
-    outline: 1px outset blue;
+    /*outline: 1px outset blue;*/
     background-color: #f3f3f3;
     border-collapse: collapse;
 }

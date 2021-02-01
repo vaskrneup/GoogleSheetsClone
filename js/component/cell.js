@@ -4,7 +4,7 @@ import {BaseComponent} from "./baseComponent.js";
 export class Cell extends BaseComponent {
     constructor(xAxis, yAxis, styles) {
         super(styles);
-        this.cell = document.createElement('input');
+        this.cell = document.createElement('textarea');
 
         this.xAxis = xAxis;
         this.yAxis = yAxis;
@@ -75,7 +75,6 @@ export class Cell extends BaseComponent {
         this.addStyles({
             ...{
                 minHeight: '20px',
-                width: '300px',
                 fontSize: '16px'
             },
             ...this.styles
