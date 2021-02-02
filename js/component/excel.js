@@ -400,9 +400,10 @@ export class Excel {
         let currentValue = '';
 
         for (let i = 0; i < formula.length; i++) {
-            const char = formula[i];
+            let char = formula[i];
 
-            if ('+-*/%'.includes(char)) {
+            if ('+-*/%^'.includes(char)) {
+                if (char === '^') char = '**';
                 operators.push(char);
 
                 cells.push(currentValue);
@@ -411,30 +412,29 @@ export class Excel {
                 currentValue += char;
             }
         }
+
         cells.push(currentValue);
+        const rawCells = cells.map(cell => cell.replace('(', '').replace(')', ''));
 
         try {
-            const parsedData = this.getCellValuesFromRange('=SUM(' + cells.join(',') + ')', true, '=SUM(', (cell) => {
+            const parsedData = this.getCellValuesFromRange('=SUM(' + rawCells.join(',') + ')', true, '=SUM(', (cell) => {
                 cell.addDependentCell({y: this.lastCell.yAxis, x: this.lastCell.xAxis});
             });
 
             if (cells.length === parsedData.length) {
                 let compiledExpression = '';
-                let output = '';
 
                 for (let i = 0; i < cells.length; i++) {
-                    compiledExpression += parsedData[i]
+                    compiledExpression += cells[i].replace(rawCells[i], parsedData[i]);
 
                     if (i < cells.length - 1) {
                         compiledExpression += operators[i];
                     }
                 }
 
-                output = eval(compiledExpression);
-
                 const lastCellUpdatedEvent = new Event('lastCellUpdated');
                 this.lastCell.setFormula('=' + formula);
-                this.lastCell.cell.value = output.toString();
+                this.lastCell.cell.value =  eval(compiledExpression).toString();
                 this.lastCell.cell.dispatchEvent(lastCellUpdatedEvent);
             }
         } catch (e) {
