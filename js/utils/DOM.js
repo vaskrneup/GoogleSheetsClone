@@ -1,3 +1,10 @@
+/**
+ * Downloads data in given format, only JSON and CSV supported.
+ *
+ * @param {string} filetype         File format.
+ * @param {string} filename         Name of file.
+ * @param {string} data             Data of the file.
+ */
 export const downloadData = (filetype, filename, data) => {
     switch (filetype) {
         case ('json') : {
@@ -21,6 +28,12 @@ export const downloadData = (filetype, filename, data) => {
     a.remove();
 }
 
+/**
+ * Simpler function to read data from file.
+ *
+ * @param {File} file       File to read data from.
+ * @param onFileLoad        Callback to run when file read is complete.
+ */
 export const readFile = (file, onFileLoad) => {
     // REF: https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications !!
     const fileReader = new FileReader();

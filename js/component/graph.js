@@ -2,17 +2,16 @@ import {Modal} from "./modal.js";
 
 
 class Graph {
-
     /**
      * Base class for creating graph.
      *
-     * @param {Array} xValues               Array of values to plot in X axis.
-     * @param {Array} yValues               Array of values to plot in Y axis.
-     * @param {string} xAxisLabel           Label to be displayed in X axis.
-     * @param {string} yAxisLabel           Label to be displayed in Y axis.
-     * @param {number} width                Width of the Graph.
-     * @param {number} height               Height of the Graph.
-     * @param {number} padding              Padding of the Graph, The width and height remains the same.
+     * @param {Array} [xValues]             Array of values to plot in X axis.
+     * @param {Array} [yValues]             Array of values to plot in Y axis.
+     * @param {string} [xAxisLabel]           Label to be displayed in X axis.
+     * @param {string} [yAxisLabel]           Label to be displayed in Y axis.
+     * @param {number} [width]                Width of the Graph.
+     * @param {number} [height]               Height of the Graph.
+     * @param {number} [padding]              Padding of the Graph, The width and height remains the same.
      */
     constructor(xValues, yValues, xAxisLabel, yAxisLabel, width, height, padding = 50) {
         this.xValues = xValues;
@@ -155,18 +154,17 @@ class Graph {
 
 
 export class DotGraph extends Graph {
-
     /**
      * class for creating dot graph.
      *
-     * @param {Array} xValues               Array of values to plot in X axis.
-     * @param {Array} yValues               Array of values to plot in Y axis.
-     * @param {string} xAxisLabel           Label to be displayed in X axis.
-     * @param {string} yAxisLabel           Label to be displayed in Y axis.
-     * @param {number} dotSize              Size of dots in graph.
-     * @param {number} width                Width of the Graph.
-     * @param {number} height               Height of the Graph.
-     * @param {number} padding              Padding of the Graph, The width and height remains the same.
+     * @param {Array} [xValues]             Array of values to plot in X axis.
+     * @param {Array} [yValues]             Array of values to plot in Y axis.
+     * @param {string} [xAxisLabel]         Label to be displayed in X axis.
+     * @param {string} [yAxisLabel]         Label to be displayed in Y axis.
+     * @param {number} [dotSize]              Size of dots in graph.
+     * @param {number} [width]                Width of the Graph.
+     * @param {number} [height]               Height of the Graph.
+     * @param {number} [padding]              Padding of the Graph, The width and height remains the same.
      */
     constructor(xValues, yValues, xAxisLabel, yAxisLabel, dotSize = 1, width = 720, height = 480, padding) {
         super(xValues, yValues, xAxisLabel, yAxisLabel, width, height, padding);
@@ -211,8 +209,20 @@ export class DotGraph extends Graph {
 
 
 export class LineGraph extends Graph {
-    constructor(xValues, yValues, xAxisLabel, yAxisLabel, lineSize = 1, width = 720, height = 480) {
-        super(xValues, yValues, xAxisLabel, yAxisLabel, width, height);
+    /**
+     * class for creating dot graph.
+     *
+     * @param {Array} [xValues]             Array of values to plot in X axis.
+     * @param {Array} [yValues]             Array of values to plot in Y axis.
+     * @param {string} [xAxisLabel]         Label to be displayed in X axis.
+     * @param {string} [yAxisLabel]         Label to be displayed in Y axis.
+     * @param {number} lineSize             width of line in graph.
+     * @param {number} width                Width of the Graph.
+     * @param {number} height               Height of the Graph.
+     * @param {number} [padding]            Padding of the Graph, The width and height remains the same.
+     */
+    constructor(xValues, yValues, xAxisLabel, yAxisLabel, lineSize = 1, width = 720, height = 480, padding) {
+        super(xValues, yValues, xAxisLabel, yAxisLabel, width, height, padding);
 
         this.lineSize = lineSize;
         this.modal = new Modal();

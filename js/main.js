@@ -107,14 +107,24 @@ let excel = new Excel(
 const helpSectionModal = new Modal({});
 helpSectionModal.addModelBody(helpSectionHTML, true);
 
+/**
+ *  downloads data in JSON format.
+ */
 const handleSaveDataAsJSON = () => {
     downloadData('json', documentNameDOM.value + '.json', JSON.stringify(excel.serialize()));
 }
 
+/**
+ * downloads data in CSV format.
+ */
 const handleSaveDataAsCSV = () => {
     downloadData('csv', documentNameDOM.value + '.csv', excel.serialize('csv'));
 }
 
+/**
+ * Change box size of document name if edited.
+ * @param e
+ */
 const changeInputSizeOnInput = (e) => {
     e.target.style.width = '0px';
 
@@ -123,6 +133,10 @@ const changeInputSizeOnInput = (e) => {
     else e.target.style.width = e.target.scrollWidth + 'px';
 }
 
+/**
+ * Loads JSON data from file and converts to spreadsheet.
+ * @param {Event} e
+ */
 const handleLoadDataFromFile = (e) => {
     const file = e.target.files[0];
 
@@ -135,7 +149,10 @@ const handleLoadDataFromFile = (e) => {
     });
 }
 
-const functionHandleEvents = () => {
+/**
+ * Handles events that is not related to spreadsheet.
+ */
+const handleEvents = () => {
     documentNameDOM.addEventListener('input', changeInputSizeOnInput);
     documentNameDOM.addEventListener('focusin', () => excel.isEditing = true);
     documentNameDOM.addEventListener('focusout', () => {
@@ -154,9 +171,12 @@ const functionHandleEvents = () => {
     htmlBtn.addEventListener('click', () => helpSectionModal.show());
 }
 
+/**
+ * Entrypoint for other functions !!
+ */
 const main = () => {
     excel.render();
-    functionHandleEvents();
+    handleEvents();
 }
 
 main();

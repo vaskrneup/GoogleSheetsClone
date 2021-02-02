@@ -1,3 +1,10 @@
+/**
+ * Parses data in FORMULA format, and returns coordinates of cells.
+ *
+ * @param text              Raw Formula Value.
+ * @param operationType     Which formula is used in given text.
+ * @returns {null|[]}
+ */
 export const parseMathSyntax = (text, operationType) => {
     let parsedText = text.replace(operationType, '').replace(')', '');
     let isTwoDigitSum = null;
