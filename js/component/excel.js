@@ -4,6 +4,7 @@ import {parseMathSyntax} from "../utils/parser.js";
 import {Modal} from "./modal.js";
 
 export class Excel {
+    RUN_UNDER_DEVELOPMENT_FEATURES = false;
     LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     ALLOWED_FORMULA = ['=SUM(', '=AVERAGE(', '=COUNT(', '=MIN(', '=MAX(', '=FILTER_ONLY_STRING(', '=FILTER_ONLY_NUM('];
     AVAILABLE_FONTS = [
@@ -435,7 +436,7 @@ export class Excel {
 
                 const lastCellUpdatedEvent = new Event('lastCellUpdated');
                 this.lastCell.setFormula('=' + formula);
-                this.lastCell.cell.value =  eval(compiledExpression).toString();
+                this.lastCell.cell.value = eval(compiledExpression).toString();
                 this.lastCell.cell.dispatchEvent(lastCellUpdatedEvent);
             }
         } catch (e) {
@@ -770,6 +771,7 @@ export class Excel {
 
     addNewColumns = () => {
         // TODO: FIX CELL JUMPING ISSUE !!
+        if (!this.RUN_UNDER_DEVELOPMENT_FEATURES) return;
         if ((this.lastColumnCount - 64) >= 26) return;
 
         this.grid.forEach((row, rowCount) => {
