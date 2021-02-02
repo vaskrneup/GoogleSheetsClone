@@ -2,6 +2,13 @@ import {BaseComponent} from "./baseComponent.js";
 
 
 export class Cell extends BaseComponent {
+    /**
+     * Represents individual input component of the spreadsheet.
+     *
+     * @param {Number} xAxis        X Axis representation in spreadsheet grid.
+     * @param {Number} yAxis        Y Axis representation in spreadsheet grid.
+     * @param {{}} [styles]         Initial styles to be applied to the cell.
+     * */
     constructor(xAxis, yAxis, styles) {
         super(styles);
         this.cell = document.createElement('textarea');
@@ -25,6 +32,9 @@ export class Cell extends BaseComponent {
         this.addEventListeners();
     }
 
+    /**
+     * Serialize Cell object in JSON format, is eligible to create new cell object with identical property using 'createCellFromJson'.
+     * */
     serialize = () => {
         return {
             xAxis: this.xAxis,
@@ -37,24 +47,44 @@ export class Cell extends BaseComponent {
         };
     }
 
+    /**
+     * Set value of current cell in object. It won't effect the value of cell itself.
+     *
+     * @param {string|number} value         Value of cell.
+     * */
     setValue = (value) => {
         this.value = value;
-        
+
         if (!this.hasUsedFormula) this.formula = '';
         this.hasUsedFormula = false;
     }
 
+    /**
+     * Set formula of current cell.
+     *
+     * @param {string} formula          Valid formula or mathematical expression, this will be used to calculate value of cell.
+     * */
     setFormula = (formula) => {
         this.formula = formula;
         this.hasUsedFormula = true;
     }
 
+    /**
+     * If this cell is used for calculating value of other cell that `cell coordinates` will be added to this cell as dependent cell.
+     *
+     * @param {{}} cell             Coordinates of the dependent cell.
+     * */
     addDependentCell = (cell) => {
         if (!this.dependentCellExists(cell)) {
             this.dependentCells.push(cell)
         }
     };
 
+    /**
+     * Check if given dependent cell is already added to this cell or not.
+     *
+     * @param {{}} cell             Coordinates of the dependent cell.
+     * */
     dependentCellExists = (cell) => {
         for (let i = 0; i < this.dependentCells.length; i++) {
             if (JSON.stringify(this.dependentCells[i]) === JSON.stringify(cell)) {
@@ -65,12 +95,19 @@ export class Cell extends BaseComponent {
         return false;
     }
 
+    /**
+     * Replaces current style with new styles and updates to DOM.
+     * New styles can be set using `addStyles`.
+     * */
     compileStyles = () => {
         Object.keys(this.styles).forEach(style => {
             this.cell.style[style] = this.styles[style];
         });
     }
 
+    /**
+     *  Adds default styles to modal, is used internally.
+     */
     setDefaultStyles = () => {
         this.addStyles({
             ...{
@@ -81,6 +118,11 @@ export class Cell extends BaseComponent {
         });
     }
 
+    /**
+     *  Classifies if current value of cell is String or Not and Apply styles accordingly.
+     *
+     *  @param {Event|{}} e        Event or object having target.value.
+     */
     classifyAsTextOrNot = (e) => {
         const currentValueAsNumber = Number(e.target.value);
 
@@ -95,6 +137,9 @@ export class Cell extends BaseComponent {
         this.compileStyles();
     }
 
+    /**
+     *  Event listeners will be added here, is used internally.
+     */
     addEventListeners = () => {
         this.cell.addEventListener('lastCellUpdated', this.classifyAsTextOrNot);
         this.cell.addEventListener('change', this.classifyAsTextOrNot);
@@ -102,15 +147,23 @@ export class Cell extends BaseComponent {
         this.cell.addEventListener('focus', () => document.dispatchEvent(this.positionChangeEvent));
     }
 
+    /**
+     *  By default only the DOM object is created, this will compile styles and performs other necessary steps to display cell properly.
+     */
     render = () => {
         this.setDefaultStyles();
 
-        this.cell.id = this.xAxis + this.yAxis;
+        this.cell.id = 'cell-' + (this.xAxis + this.yAxis);
         this.cell.classList.add('cell');
         this.compileStyles();
     }
 }
 
+/**
+ * Creates `Cell` object using the data provided by `Cell.serialize`.
+ *
+ * @param {{}} data         Cell serialized data.
+ * */
 export const createCellFromJson = (data) => {
     const cell = new Cell(data.xAxis, data.yAxis, data.styles);
     cell.value = data.value;

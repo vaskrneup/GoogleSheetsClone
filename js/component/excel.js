@@ -298,7 +298,6 @@ export class Excel {
     handleCellClick = (e) => {
         this.isEditing = false; // for saying editing has stopped in last cell !!
         this.changeCell(e.detail.xAxis, e.detail.yAxis);
-        console.log(e.detail.xAxis, e.detail.yAxis)
         this.showActiveCell();
         this.isEditing = true; // for saying editing has started in current cell !!
     }
@@ -786,7 +785,7 @@ export class Excel {
                 newColumns.push(cell);
             }
 
-            this.grid[rowCount] = [...row, ...newColumns];
+            this.grid[rowCount] = [...row, ...newColumns]
         });
 
         this.numberOfColumns += 26;

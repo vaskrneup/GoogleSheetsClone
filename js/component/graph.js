@@ -2,6 +2,18 @@ import {Modal} from "./modal.js";
 
 
 class Graph {
+
+    /**
+     * Base class for creating graph.
+     *
+     * @param {Array} xValues               Array of values to plot in X axis.
+     * @param {Array} yValues               Array of values to plot in Y axis.
+     * @param {string} xAxisLabel           Label to be displayed in X axis.
+     * @param {string} yAxisLabel           Label to be displayed in Y axis.
+     * @param {number} width                Width of the Graph.
+     * @param {number} height               Height of the Graph.
+     * @param {number} padding              Padding of the Graph, The width and height remains the same.
+     */
     constructor(xValues, yValues, xAxisLabel, yAxisLabel, width, height, padding = 50) {
         this.xValues = xValues;
         this.yValues = yValues;
@@ -30,16 +42,31 @@ class Graph {
         this.ctx.restore();
     }
 
+    /**
+     * Sets value of xAxis values and yAxis values.
+     *
+     * @param {Array} x             Array of values top plot in X axis.
+     * @param {Array} y             Array of values top plot in Y axis.
+     * */
     setValues = (x, y) => {
         this.xValues = x;
         this.yValues = y;
     }
 
+    /**
+     * Labels to be displayed in x and y axis.
+     *
+     * @param {string} xLabel               Label to display in X axis.
+     * @param {string} yLabel               Label to display in Y axis.
+     * */
     setLabels = (xLabel, yLabel) => {
         this.xAxisLabel = xLabel;
         this.yAxisLabel = yLabel;
     }
 
+    /**
+     * Writes labels to the X and Y axis, will be used internally.
+     * */
     writeLabels = () => {
         this.ctx.restore();
         // For X Axis !!
@@ -56,6 +83,9 @@ class Graph {
         this.ctx.restore();
     }
 
+    /**
+     * Writes Value range in X and Y axis, will be used internally.
+     * */
     writeAxisValues = () => {
         const yStep = (this.height - this.padding * 2) / this.numberOfValuesInYAxis;
         const xStep = (this.width - this.padding * 2) / this.numberOfValuesInXAxis;
@@ -82,6 +112,9 @@ class Graph {
         this.ctx.restore();
     }
 
+    /**
+     * Writes line in X and Y axis, will be used internally.
+     * */
     drawAxisLines = () => {
         // Y Axis !!
         this.ctx.beginPath();
@@ -94,6 +127,10 @@ class Graph {
         this.ctx.closePath();
     }
 
+    /**
+     * Run all the above functions for creating basic requirements of graph.
+     * Works as super().render() for particular function for inheriting classes.
+     * */
     _render = () => {
         this.writeLabels();
         this.writeAxisValues();
@@ -108,6 +145,9 @@ class Graph {
         this.modal.show();
     }
 
+    /**
+     * Renders all the required objects to display graph.
+     */
     render = () => {
         this._render();
     }
@@ -115,13 +155,29 @@ class Graph {
 
 
 export class DotGraph extends Graph {
-    constructor(xValues, yValues, xAxisLabel, yAxisLabel, dotSize = 1, width = 720, height = 480) {
-        super(xValues, yValues, xAxisLabel, yAxisLabel, width, height);
+
+    /**
+     * class for creating dot graph.
+     *
+     * @param {Array} xValues               Array of values to plot in X axis.
+     * @param {Array} yValues               Array of values to plot in Y axis.
+     * @param {string} xAxisLabel           Label to be displayed in X axis.
+     * @param {string} yAxisLabel           Label to be displayed in Y axis.
+     * @param {number} dotSize              Size of dots in graph.
+     * @param {number} width                Width of the Graph.
+     * @param {number} height               Height of the Graph.
+     * @param {number} padding              Padding of the Graph, The width and height remains the same.
+     */
+    constructor(xValues, yValues, xAxisLabel, yAxisLabel, dotSize = 1, width = 720, height = 480, padding) {
+        super(xValues, yValues, xAxisLabel, yAxisLabel, width, height, padding);
 
         this.dotSize = dotSize;
         this.modal = new Modal();
     }
 
+    /**
+     * Draws dot in graph using xValues and yValues.
+     */
     drawDots = () => {
         this.ctx.save();
         this.ctx.transform(1, 0, 0, -1, 0, this.height);
@@ -143,7 +199,9 @@ export class DotGraph extends Graph {
 
         this.ctx.restore();
     }
-
+    /**
+     * Renders all the required objects to display graph.
+     */
     render = () => {
         this.drawDots();
 
@@ -160,6 +218,9 @@ export class LineGraph extends Graph {
         this.modal = new Modal();
     }
 
+    /**
+     * Draws lines in graph using xValues and yValues.
+     */
     drawLines = () => {
         this.ctx.save();
         this.ctx.transform(1, 0, 0, -1, 0, this.height);
@@ -181,6 +242,9 @@ export class LineGraph extends Graph {
         this.ctx.restore();
     }
 
+    /**
+     * Renders all the required objects to display graph.
+     */
     render = () => {
         this.drawLines();
 

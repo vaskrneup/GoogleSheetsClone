@@ -6,7 +6,7 @@ export class Modal extends BaseComponent {
      * Class for creating modals.
      *
      * @param {{}} [styles]                 Add styles to be used by model.
-     * @param {String|HTMLElement} child    Body of the Modal, can be `String` or `HTMLElement`.
+     * @param {String|HTMLElement} [child]    Body of the Modal, can be `String` or `HTMLElement`.
      */
     constructor(styles, child) {
         super(styles);

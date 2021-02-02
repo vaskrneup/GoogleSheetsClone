@@ -67,7 +67,8 @@ const helpSectionHTML = `
                     <li>Provide label for graphs.</li>
                     <li>Select Graph type from dropdown.</li>
                     <li>Click on plot to plot the graph.</li>
-                    <li>You may press \`ESC\` Key to close graph.</li>
+                    <li>You can press \`ESC\` Key to close graph.</li>
+                    <li>To download graph, Right click on graph and click on save image as.</li>
                 </ul>
             </div>
 
