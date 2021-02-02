@@ -124,6 +124,8 @@ export class Excel {
 
         this.modalFieldsListenerAdded = false;
         this.isWorkingInExternalInput = false; // To disable key controls when editing non cell fields !!
+
+        this.lastColumnCount = 64;
     }
 
     serialize = (type = 'json') => {
@@ -264,6 +266,10 @@ export class Excel {
         if (this.activeYAxis >= this.numberOfRows - 1) this.addNewRows(10);
     }
 
+    updateNumberOfColumns = () => {
+        if (this.activeXAxis >= this.numberOfColumns - 1) this.addNewColumns();
+    }
+
     changeCell = (newX, newY) => {
         if (!this.isEditing) {
             if (!((newX < 0) || (newX >= this.numberOfColumns) || (newY < 0) || (newY >= this.numberOfRows))) {
@@ -281,6 +287,7 @@ export class Excel {
                 this.updateActiveCellDisplay();
                 this.updateFormulaBar();
                 this.updateNumberOfRows();
+                this.updateNumberOfColumns();
             }
         }
     }
@@ -383,9 +390,66 @@ export class Excel {
         return data;
     }
 
+    handleCustomFormulaUsage = (e) => {
+        let formula = e.target.value;
+        if (formula.startsWith('=')) formula = formula.replace('=', '');
+        else return;
+
+        const cells = [];
+        const operators = [];
+        let currentValue = '';
+
+        for (let i = 0; i < formula.length; i++) {
+            const char = formula[i];
+
+            if ('+-*/%'.includes(char)) {
+                operators.push(char);
+
+                cells.push(currentValue);
+                currentValue = '';
+            } else {
+                currentValue += char;
+            }
+        }
+        cells.push(currentValue);
+
+        try {
+            const parsedData = this.getCellValuesFromRange('=SUM(' + cells.join(',') + ')', true, '=SUM(', (cell) => {
+                cell.addDependentCell({y: this.lastCell.yAxis, x: this.lastCell.xAxis});
+            });
+
+            if (cells.length === parsedData.length) {
+                let compiledExpression = '';
+                let output = '';
+
+                for (let i = 0; i < cells.length; i++) {
+                    compiledExpression += parsedData[i]
+
+                    if (i < cells.length - 1) {
+                        compiledExpression += operators[i];
+                    }
+                }
+
+                output = eval(compiledExpression);
+
+                const lastCellUpdatedEvent = new Event('lastCellUpdated');
+                this.lastCell.setFormula('=' + formula);
+                this.lastCell.cell.value = output.toString();
+                this.lastCell.cell.dispatchEvent(lastCellUpdatedEvent);
+            }
+        } catch (e) {
+
+        }
+    }
+
+
     handleFormulaUsage = (e) => {
+        let isPreDefinedFormula = false;
+
         this.ALLOWED_FORMULA.forEach(formulaFor => {
             if (e.target.value.includes(formulaFor)) {
+                isPreDefinedFormula = true;
+
                 if (formulaFor === '=FILTER_ONLY_NUM(') {
                     this.getCellValuesFromRange(e.target.value, false, formulaFor, (cell) => {
                         if (typeof cell.value !== 'number') {
@@ -450,6 +514,8 @@ export class Excel {
                 }
             }
         });
+
+        if (!isPreDefinedFormula) this.handleCustomFormulaUsage(e);
     }
 
     handleGraphBtnClick = () => {
@@ -518,6 +584,11 @@ export class Excel {
                     value: cell.formula
                 }
             });
+            this.handleCustomFormulaUsage({
+                target: {
+                    value: cell.formula
+                }
+            });
             this.lastCell = tempLastCell;
         });
     }
@@ -531,7 +602,6 @@ export class Excel {
 
     handleColumnHeaderClick = (e) => {
         e.preventDefault();
-
     }
 
     addEventListenersForFallbackToCellFromInput = (fields) => {
@@ -585,12 +655,24 @@ export class Excel {
     // =================================================================================================================
     // CREATING DOM OBJECTS !!
     getTableHead = () => {
+        if (this.numberOfColumns > 702) return;
+
         let tHead = '';
+        let j = 0;
 
         for (let i = 0; i < this.numberOfColumns; i++) {
-            tHead += `<th class="disabled col" id="col-${i}">${this.LETTERS[i]}</th>`;
-        }
+            let letter = '';
+            if (j === 26) {
+                j = 0;
+                if ((this.lastColumnCount - 64) <= 26) this.lastColumnCount++;
+            }
 
+            if (i < 26) letter = this.LETTERS[j];
+            else letter = String.fromCharCode(this.lastColumnCount) + this.LETTERS[j];
+
+            tHead += `<th class="disabled col" id="col-${i}">${letter}</th>`;
+            j++;
+        }
         return tHead;
     }
 
@@ -602,8 +684,10 @@ export class Excel {
 
             for (let colCount = 0; colCount < this.numberOfColumns; colCount++) {
                 const cell = new Cell(this.grid.length + colCount, this.grid.length + rowCount);
-                cell.cell.addEventListener('change', this.handleFormulaUsage);
-                cell.cell.addEventListener('change', this.handleUpdateDependentCell);
+                cell.cell.addEventListener('change', (e) => {
+                    this.handleFormulaUsage(e);
+                    this.handleUpdateDependentCell(e);
+                });
                 row.push(cell);
             }
 
@@ -676,12 +760,37 @@ export class Excel {
         });
     }
 
-
     addNewRows = (numberOfRows) => {
         const newRows = this.getNewRows(numberOfRows);
         this.grid = [...this.grid, ...newRows];
         this.numberOfRows += numberOfRows;
         this.renderCells(newRows);
+    }
+
+    addNewColumns = () => {
+        // TODO: FIX CELL JUMPING ISSUE !!
+        if ((this.lastColumnCount - 64) >= 26) return;
+
+        this.grid.forEach((row, rowCount) => {
+            const newColumns = [];
+
+            for (let i = 0; i < 26; i++) {
+                const cell = new Cell(i + this.numberOfColumns + 1, rowCount);
+                cell.cell.addEventListener('change', (e) => {
+                    this.handleFormulaUsage(e);
+                    this.handleUpdateDependentCell(e);
+                });
+                newColumns.push(cell);
+            }
+
+            this.grid[rowCount] = [...row, ...newColumns]
+        });
+
+        this.numberOfColumns += 26;
+
+        this.renderTable();
+        this.tbody = this.tableContainer.querySelector('tbody');
+        this.resetGrid(this.grid);
     }
 
     render = () => {

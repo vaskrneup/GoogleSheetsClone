@@ -39,7 +39,7 @@ export class Cell extends BaseComponent {
 
     setValue = (value) => {
         this.value = value;
-
+        
         if (!this.hasUsedFormula) this.formula = '';
         this.hasUsedFormula = false;
     }
