@@ -15,6 +15,7 @@ const helpSectionHTML = `
                     <li>=FORMULA_FOR(A1:C1)</li>
                     <li>=FORMULA_FOR(A1,A2,A3)</li>
                     <li>=FORMULA_FOR(A1,A2,A3)</li>
+                    <li>Any valid Mathematical Expression, use ^ for square. Raw values are not allowed, must be valid cell name</li>
                 </ul>
                 <br>
                 <h2 class="theme-emphasis sub-header">NOTE</h2>
