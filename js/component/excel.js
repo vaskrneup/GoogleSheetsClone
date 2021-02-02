@@ -297,6 +297,7 @@ export class Excel {
     handleCellClick = (e) => {
         this.isEditing = false; // for saying editing has stopped in last cell !!
         this.changeCell(e.detail.xAxis, e.detail.yAxis);
+        console.log(e.detail.xAxis, e.detail.yAxis)
         this.showActiveCell();
         this.isEditing = true; // for saying editing has started in current cell !!
     }
@@ -683,7 +684,7 @@ export class Excel {
             const row = [];
 
             for (let colCount = 0; colCount < this.numberOfColumns; colCount++) {
-                const cell = new Cell(this.grid.length + colCount, this.grid.length + rowCount);
+                const cell = new Cell(colCount, this.grid.length + rowCount);
                 cell.cell.addEventListener('change', (e) => {
                     this.handleFormulaUsage(e);
                     this.handleUpdateDependentCell(e);
