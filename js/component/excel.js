@@ -786,7 +786,7 @@ export class Excel {
                 newColumns.push(cell);
             }
 
-            this.grid[rowCount] = [...row, ...newColumns]
+            this.grid[rowCount] = [...row, ...newColumns];
         });
 
         this.numberOfColumns += 26;
