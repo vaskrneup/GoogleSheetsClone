@@ -40,6 +40,11 @@
     white-space: nowrap;
 }
 
+.current-doc-name-input:hover {
+    outline: 1px solid grey;
+    cursor: text;
+}
+
 .current-doc-name-input:focus {
     outline: 2px solid blue;
     box-shadow: 0 0 3px 1px blue;
