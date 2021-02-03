@@ -915,8 +915,18 @@ export class Excel {
             const tr = document.createElement('tr');
             tr.innerHTML = `<td class="disabled center-text table-row" id="row-${i + startCountFrom}">${i + 1 + startCountFrom}</td>`;
 
-            row.forEach(cell => {
+            row.forEach((cell, j) => {
                 const td = document.createElement('td');
+                td.style.verticalAlign = 'top';
+
+                td.addEventListener('click', () => {
+                    this.isEditing = false;
+                    this.changeCell(j, i +startCountFrom);
+                    this.showActiveCell();
+                    this.focusCurrentCell();
+                    this.isEditing = true;
+                });
+
                 tr.appendChild(td);
 
                 cell.render();
