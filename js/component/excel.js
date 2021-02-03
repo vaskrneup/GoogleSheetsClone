@@ -814,7 +814,7 @@ export class Excel {
 
             tHead += `
             <th class="col">
-                <textarea rows="1" class="disabled center-text" disabled id="col-${i}" style="resize: horizontal; position: relative; top: 2px; font-size: 16px; color:black;">
+                <textarea rows="1" class="disabled center-text excel-col" disabled id="col-${i}">
                     ${letter}
                 </textarea>
             </th>

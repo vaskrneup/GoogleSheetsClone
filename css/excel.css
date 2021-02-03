@@ -21,3 +21,21 @@
 .active-excel-navbar {
     background-color: #cbcbcb;
 }
+
+.excel-col {
+    resize: horizontal;
+    position: relative;
+    top: 2px;
+    font-size: 16px;
+    color: black;
+}
+
+.excel-row {
+    resize: vertical;
+    position: relative;
+    top: 2px;
+    font-size: 16px;
+    color: black;
+
+    width: 100%;
+}
