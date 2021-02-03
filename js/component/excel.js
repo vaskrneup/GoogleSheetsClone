@@ -642,12 +642,17 @@ export class Excel {
         const yAxisStartField = document.getElementById('y-axis-from');
         const yAxisEndField = document.getElementById('y-axis-to');
 
+        const xAxisLabel = document.getElementById('x-axis-label');
+        const yAxisLabel = document.getElementById('y-axis-label');
+
+        const graphType = document.getElementById('graph-type-selector');
+
         this.isWorkingInExternalInput = true;
         xAxisStartField.focus();
 
         if (!this.modalFieldsListenerAdded) {
             this.addEventListenersToExternalFields([
-                xAxisStartField, xAxisEndField, yAxisStartField, yAxisEndField
+                xAxisStartField, xAxisEndField, yAxisStartField, yAxisEndField, xAxisLabel, yAxisLabel, graphType
             ]);
             this.modalFieldsListenerAdded = true;
         }
