@@ -154,9 +154,13 @@ const handleLoadDataFromFile = (e) => {
  */
 const handleEvents = () => {
     documentNameDOM.addEventListener('input', changeInputSizeOnInput);
-    documentNameDOM.addEventListener('focusin', () => excel.isEditing = true);
+    documentNameDOM.addEventListener('focusin', () => {
+        excel.isEditing = true
+        excel.isWorkingInExternalInput = true;
+    });
     documentNameDOM.addEventListener('focusout', () => {
         excel.isEditing = false;
+        excel.isWorkingInExternalInput = false;
         if (!documentNameDOM.value) documentNameDOM.value = 'Untitled Document';
         changeInputSizeOnInput({target: documentNameDOM});
     });

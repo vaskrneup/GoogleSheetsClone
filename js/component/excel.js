@@ -66,7 +66,7 @@ export class Excel {
                     <option value="DOT">Dot Graph</option>
                     <option value="LINE">Line Graph</option>
                 </select>
-                <input type="button" value="Plot Graph" class="theme-button" id="submit-graph-form">
+                <input type="submit" value="Plot Graph" class="theme-button" id="submit-graph-form">
             </div>
         </div>
     `;
@@ -87,7 +87,7 @@ export class Excel {
      * @param {string} formulaInputId               Active cell formula showing ID.
      * @param {string} fontSelectorId               Font selector ID.
      * @param {string} graphPlotBtnId               Graph plotting button ID.
-     * @param {Array}  grid                         Grid of cells, if provided default grid wont be created.
+     * @param {Array}  [grid]                       Grid of cells, if provided default grid wont be created.
      */
     constructor(
         numberOfRows, numberOfColumns, tableContainerId,
@@ -224,6 +224,7 @@ export class Excel {
 
             case 'Enter': {
                 e.preventDefault();
+
                 if (!this.isEditing) {
                     this.focusCurrentCell();
                 } else {
@@ -916,7 +917,6 @@ export class Excel {
 
             row.forEach(cell => {
                 const td = document.createElement('td');
-
                 tr.appendChild(td);
 
                 cell.render();

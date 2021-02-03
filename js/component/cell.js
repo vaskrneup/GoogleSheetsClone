@@ -12,6 +12,7 @@ export class Cell extends BaseComponent {
     constructor(xAxis, yAxis, styles) {
         super(styles);
         this.cell = document.createElement('textarea');
+        this.cell.rows = 1;
 
         this.xAxis = xAxis;
         this.yAxis = yAxis;
@@ -111,8 +112,7 @@ export class Cell extends BaseComponent {
     setDefaultStyles = () => {
         this.addStyles({
             ...{
-                minHeight: '20px',
-                fontSize: '16px'
+                fontSize: '16px',
             },
             ...this.styles
         });
@@ -153,7 +153,7 @@ export class Cell extends BaseComponent {
     render = () => {
         this.setDefaultStyles();
 
-        this.cell.id = 'cell-' + (this.xAxis + this.yAxis);
+        this.cell.id = 'cell-' + (this.xAxis.toString() + '-' + this.yAxis.toString());
         this.cell.classList.add('cell');
         this.compileStyles();
     }
