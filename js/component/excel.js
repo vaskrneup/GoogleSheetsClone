@@ -5,6 +5,8 @@ import {Modal} from "./modal.js";
 
 export class Excel {
     RUN_UNDER_DEVELOPMENT_FEATURES = false;
+
+    NUMBER_OF_NEW_ROWS_TO_APPEND = 10;
     LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     ALLOWED_FORMULA = ['=SUM(', '=AVERAGE(', '=COUNT(', '=MIN(', '=MAX(', '=FILTER_ONLY_STRING(', '=FILTER_ONLY_NUM('];
     AVAILABLE_FONTS = [
@@ -37,8 +39,8 @@ export class Excel {
             
             <div>
                 <h3>Row or column for X-Axis</h3>
-                <label><input class="theme-input-field" type="text" id="x-axis-from" placeholder="X axis start cell"></label>
-                <label><input class="theme-input-field" type="text" id="x-axis-to" placeholder="X axis end cell"></label>
+                <label><input class="theme-input-field" type="text" required  id="x-axis-from" placeholder="X axis start cell"></label>
+                <label><input class="theme-input-field" type="text" required id="x-axis-to" placeholder="X axis end cell"></label>
                 <label><input class="theme-input-field" type="text" id="x-axis-label" placeholder="X axis label"></label>
             </div>
             
@@ -46,8 +48,8 @@ export class Excel {
             
             <div>
                 <h3>Row or column for Y-Axis</h3>
-                <label><input class="theme-input-field" type="text" id="y-axis-from" placeholder="Y axis start cell"></label>
-                <label><input class="theme-input-field" type="text" id="y-axis-to" placeholder="Y axis end cell"></label>
+                <label><input class="theme-input-field" type="text" required  id="y-axis-from" placeholder="Y axis start cell"></label>
+                <label><input class="theme-input-field" type="text" required  id="y-axis-to" placeholder="Y axis end cell"></label>
                 <label><input class="theme-input-field" type="text" id="y-axis-label" placeholder="Y axis label"></label>
             </div>
             
@@ -69,6 +71,24 @@ export class Excel {
         </div>
     `;
 
+    /**
+     * Class For creating Spreadsheet.
+     *
+     * @param {number} numberOfRows                 Number of rows in spreadsheet.
+     * @param {number} numberOfColumns              Number of columns in spreadsheet.
+     * @param {string} tableContainerId             spreadsheet container ID.
+     * @param {string} backgroundColorPickerId      Cell background color picker ID.
+     * @param {string} textColorPickerId            Cell text color picker ID.
+     * @param {string} fontSizeInputId              Font size input field ID.
+     * @param {string} boldBtnId                    Make text bold button ID.
+     * @param {string} italicBtnId                  Make text italic button ID.
+     * @param {string} crossedFontBtnId             Make text crossed button ID.
+     * @param {string} currentCellDisplayId         Active cell name display ID.
+     * @param {string} formulaInputId               Active cell formula showing ID.
+     * @param {string} fontSelectorId               Font selector ID.
+     * @param {string} graphPlotBtnId               Graph plotting button ID.
+     * @param {Array}  grid                         Grid of cells, if provided default grid wont be created.
+     */
     constructor(
         numberOfRows, numberOfColumns, tableContainerId,
         backgroundColorPickerId, textColorPickerId, fontSizeInputId,
@@ -109,7 +129,7 @@ export class Excel {
 
         this.grid = grid || [];
 
-        this.graphManager = {
+        this.graphManagers = {
             lineGraph: new LineGraph(null, null, 'Number', 'Values'),
             dotGraph: new DotGraph(null, null, 'Number', 'Values'),
         };
@@ -129,6 +149,10 @@ export class Excel {
         this.lastColumnCount = 64;
     }
 
+    /**
+     * Serialize Excel object in JSON OR CSV format, is eligible to create new Excel object with identical property using 'createExcelFromJson'.
+     * Excel object can be recreated only using JSON serialized data.
+     * */
     serialize = (type = 'json') => {
         switch (type) {
             case 'json': {
@@ -163,6 +187,11 @@ export class Excel {
     }
 
 
+    /**
+     * Handles key presses in the document.
+     *
+     * @param {any} e          Keydown event.
+     */
     handleKeyPress = (e) => {
         if (this.isWorkingInExternalInput) return;
 
@@ -232,6 +261,9 @@ export class Excel {
     }
 
     // CELL NAVBAR RELATED !!
+    /**
+     * Highlights currently active navbar in both x and y axis.
+     */
     showActiveNavbar = () => {
         document.getElementById('col-' + this.activeXAxis).classList.add('active-excel-navbar');
         document.getElementById('row-' + this.activeYAxis).classList.add('active-excel-navbar');
@@ -246,31 +278,58 @@ export class Excel {
     // END CELL NAVBAR RELATED !!
 
     // CELL RELATED !!
+    /**
+     * Focuses the current cell.
+     */
     focusCurrentCell = () => this.activeCell.cell.focus();
 
+    /**
+     * Blurs the last cell.
+     */
     blurLastCell = () => this.lastCell.cell.blur();
 
+    /**
+     * Highlights active cell and removes highlight from last cell.
+     */
     showActiveCell = () => {
         this.lastCell.cell.classList.remove('active-cell');
         this.activeCell.cell.classList.add('active-cell');
     }
 
+    /**
+     * Updates name of current cell in cell display.
+     */
     updateActiveCellDisplay = () => {
         this.currentCellDisplay.innerText = this.LETTERS[this.activeXAxis] + (this.activeYAxis + 1);
     }
 
+    /**
+     * Updates formula bar with current cell formula or value if no formula is used.
+     */
     updateFormulaBar = () => {
         this.formulaInput.value = this.activeCell.formula || this.activeCell.value;
     }
 
+    /**
+     * Updates numbers of rows if last row is reached.
+     */
     updateNumberOfRows = () => {
-        if (this.activeYAxis >= this.numberOfRows - 1) this.addNewRows(10);
+        if (this.activeYAxis >= this.numberOfRows - 1) this.addNewRows(this.NUMBER_OF_NEW_ROWS_TO_APPEND);
     }
 
+    /**
+     * Updates number of columns if last column is reached.
+     */
     updateNumberOfColumns = () => {
         if (this.activeXAxis >= this.numberOfColumns - 1) this.addNewColumns();
     }
 
+    /**
+     * Changes currently active cell.
+     *
+     * @param {number} newX         Active cell x axis.
+     * @param {number} newY         Active cell y axis.
+     */
     changeCell = (newX, newY) => {
         if (!this.isEditing) {
             if (!((newX < 0) || (newX >= this.numberOfColumns) || (newY < 0) || (newY >= this.numberOfRows))) {
@@ -295,6 +354,11 @@ export class Excel {
     // END CELL RELATED !!
 
     // HANDLE EVENTS !!
+    /**
+     * Handles required steps when cell is focused.
+     *
+     * @param e
+     */
     handleCellClick = (e) => {
         this.isEditing = false; // for saying editing has stopped in last cell !!
         this.changeCell(e.detail.xAxis, e.detail.yAxis);
@@ -302,6 +366,11 @@ export class Excel {
         this.isEditing = true; // for saying editing has started in current cell !!
     }
 
+    /**
+     * Handles cell background color change.
+     *
+     * @param e
+     */
     handleCellBackgroundColorChange = (e) => {
         this.activeCell.addStyles({
             backgroundColor: e.target.value
@@ -309,6 +378,11 @@ export class Excel {
         this.activeCell.compileStyles();
     }
 
+    /**
+     * Handles cell text color change.
+     *
+     * @param e
+     */
     handleCellTextColorChange = (e) => {
         this.activeCell.addStyles({
             color: e.target.value
@@ -316,6 +390,11 @@ export class Excel {
         this.activeCell.compileStyles();
     }
 
+    /**
+     * Handles cell font size change.
+     *
+     * @param e
+     */
     handleFontSizeChange = (e) => {
         this.activeCell.addStyles({
             fontSize: e.target.value + 'px'
@@ -323,6 +402,9 @@ export class Excel {
         this.activeCell.compileStyles();
     }
 
+    /**
+     * Handles cell text italic style change.
+     */
     handleItalicChange = () => {
         this.activeCell.addStyles({
             fontStyle: this.activeCell.styles.fontStyle === 'italic' ? 'normal' : 'italic',
@@ -330,6 +412,9 @@ export class Excel {
         this.activeCell.compileStyles();
     }
 
+    /**
+     * Handles cell text bold style change.
+     */
     handleBoldChange = () => {
         this.activeCell.addStyles({
             fontWeight: this.activeCell.styles.fontWeight === 'bold' ? 'normal' : 'bold',
@@ -337,6 +422,9 @@ export class Excel {
         this.activeCell.compileStyles();
     }
 
+    /**
+     * Handles cell text strike through style change.
+     */
     handleStrikeThroughChange = () => {
         this.activeCell.addStyles({
             textDecoration: this.activeCell.styles.textDecoration === 'line-through' ? 'none' : 'line-through',
@@ -344,6 +432,10 @@ export class Excel {
         this.activeCell.compileStyles();
     }
 
+    /**
+     * Handles cell text font change.
+     * @param e
+     */
     handleFontFamilyChange = (e) => {
         this.activeCell.addStyles({
             fontFamily: e.target.value
@@ -352,6 +444,15 @@ export class Excel {
     }
 
     // FOR FORMULA USAGE !!
+    /**
+     * parses cell value from the given range of cells.
+     *
+     * @param rawRange          Raw range of the cell including formula.
+     * @param onlyNumbers       If true, appends data only if the data is number else all values are appended.
+     * @param formulaFor        What formula is used in `rawRange`.
+     * @param callback          Callback if the cell value can be appended.
+     * @returns {[]}            List of successfully parsed data.
+     */
     getCellValuesFromRange = (rawRange, onlyNumbers = true, formulaFor = '=SUM(', callback) => {
         const parsedCoordinates = parseMathSyntax(rawRange, formulaFor);
         const data = [];
@@ -391,6 +492,11 @@ export class Excel {
         return data;
     }
 
+    /**
+     * Handles the uses of custom formula.
+     *
+     * @param e             any object or event that contains target.value.
+     */
     handleCustomFormulaUsage = (e) => {
         let formula = e.target.value;
         if (formula.startsWith('=')) formula = formula.replace('=', '');
@@ -443,7 +549,11 @@ export class Excel {
         }
     }
 
-
+    /**
+     * Handles uses of any type of formula.
+     *
+     * @param e
+     */
     handleFormulaUsage = (e) => {
         let isPreDefinedFormula = false;
 
@@ -519,6 +629,9 @@ export class Excel {
         if (!isPreDefinedFormula) this.handleCustomFormulaUsage(e);
     }
 
+    /**
+     * handles show graph button click.
+     */
     handleGraphBtnClick = () => {
         this.modal.addModelBody(this.GRAPH_CREATION_FORM, true);
         this.modal.show();
@@ -542,6 +655,9 @@ export class Excel {
         document.getElementById('submit-graph-form').addEventListener('click', this.handleGraphDetailForm);
     }
 
+    /**
+     * Shows graph plot data entry modal and handles data entry.
+     */
     handleGraphDetailForm = () => {
         const xAxisStartField = document.getElementById('x-axis-from');
         const xAxisEndField = document.getElementById('x-axis-to');
@@ -562,17 +678,20 @@ export class Excel {
         const graphType = document.getElementById('graph-type-selector').value;
 
         if (graphType === 'DOT') {
-            this.graphManager.dotGraph.setValues(graphXValues, graphYValues);
-            this.graphManager.dotGraph.setLabels(xAxisLabel, yAxisLabel);
-            this.graphManager.dotGraph.render();
+            this.graphManagers.dotGraph.setValues(graphXValues, graphYValues);
+            this.graphManagers.dotGraph.setLabels(xAxisLabel, yAxisLabel);
+            this.graphManagers.dotGraph.render();
         } else if (graphType === 'LINE') {
-            this.graphManager.lineGraph.setValues(graphXValues, graphYValues);
-            this.graphManager.lineGraph.setLabels(xAxisLabel, yAxisLabel);
-            this.graphManager.lineGraph.render();
+            this.graphManagers.lineGraph.setValues(graphXValues, graphYValues);
+            this.graphManagers.lineGraph.setLabels(xAxisLabel, yAxisLabel);
+            this.graphManagers.lineGraph.render();
         }
         this.modal.hide();
     }
 
+    /**
+     * updates dependent cell value if last updated cell is used for calculating cell value.
+     */
     handleUpdateDependentCell = () => {
         this.lastCell.dependentCells.forEach(cellAxis => {
             const cell = this.grid[cellAxis.y][cellAxis.x];
@@ -594,6 +713,11 @@ export class Excel {
         });
     }
 
+    /**
+     * Provides focus rights to cell when enter key is pressed from external fields.
+     *
+     * @param e
+     */
     handleFallbackToCellFromInput = (e) => {
         if (e.code === 'Enter') {
             this.isWorkingInExternalInput = false;
@@ -601,16 +725,22 @@ export class Excel {
         }
     }
 
-    handleColumnHeaderClick = (e) => {
-        e.preventDefault();
-    }
-
+    /**
+     * Add event listeners for handing control to cell from external fields.
+     *
+     * @param fields
+     */
     addEventListenersForFallbackToCellFromInput = (fields) => {
         fields.forEach(field => {
             field.addEventListener('keydown', this.handleFallbackToCellFromInput);
         });
     }
 
+    /**
+     * Stops cell change when editing in external fields.
+     *
+     * @param fields
+     */
     addEventListenersToExternalFields = (fields) => {
         fields.forEach(field => {
             field.addEventListener('focusin', () => {
@@ -624,6 +754,9 @@ export class Excel {
         });
     }
 
+    /**
+     * Adds event listeners, is used internally.
+     */
     addEventListeners = () => {
         this.backgroundColorPicker.addEventListener('input', this.handleCellBackgroundColorChange);
         this.textColorPicker.addEventListener('input', this.handleCellTextColorChange);
@@ -639,9 +772,6 @@ export class Excel {
 
         document.addEventListener('keydown', this.handleKeyPress);
         document.addEventListener('cellChangedPosition', this.handleCellClick);
-        document.querySelectorAll('.col').forEach(col => {
-            col.addEventListener('contextmenu', this.handleColumnHeaderClick);
-        });
 
         this.addEventListenersToExternalFields([
             this.backgroundColorPicker, this.textColorPicker, this.fontSizeInput,
@@ -655,6 +785,11 @@ export class Excel {
 
     // =================================================================================================================
     // CREATING DOM OBJECTS !!
+    /**
+     * Creates html for table head.
+     *
+     * @returns {string|undefined}        HTML for table head.
+     */
     getTableHead = () => {
         if (this.numberOfColumns > 702) return;
 
@@ -677,6 +812,12 @@ export class Excel {
         return tHead;
     }
 
+    /**
+     * creates and returns new rows.
+     *
+     * @param numberOfRows          Number of new rows to make.
+     * @returns {[]}                grid of cells.
+     */
     getNewRows = (numberOfRows) => {
         const grid = [];
 
@@ -698,12 +839,20 @@ export class Excel {
         return grid;
     }
 
+    /**
+     * Creates initial rows and columns.
+     */
     createRowsAndColumns = () => {
         this.grid = [...this.grid, ...this.getNewRows(this.numberOfRows)];
     }
     // END CREATE DOM OBJECTS !!
 
     // RENDERING DOM OBJECTS !!
+    /**
+     * Resets grid and re-renders grid using newly provided grid.
+     *
+     * @param grid        Grid of new rows and columns.
+     */
     resetGrid = (grid) => {
         this.tbody.innerHTML = '';
         this.grid = grid;
@@ -716,6 +865,9 @@ export class Excel {
         });
     }
 
+    /**
+     * Renders available fonts to font selector.
+     */
     renderAvailableFonts = () => {
         let fontOptionsHTML = '';
         this.AVAILABLE_FONTS.forEach(font => {
@@ -725,6 +877,9 @@ export class Excel {
         this.fontSelector.innerHTML = fontOptionsHTML;
     }
 
+    /**
+     * Renders table initial skeleton with head, BODY is not rendered.
+     */
     renderTable = () => {
         this.tableContainer.innerHTML = `
             <table>
@@ -741,6 +896,11 @@ export class Excel {
         `;
     }
 
+    /**
+     * Renders all available cells if grid is not provided else given grid are rendered.
+     *
+     * @param grid          Grid to render, if not provided current grid will be rendered.
+     */
     renderCells = (grid) => {
         const startCountFrom = grid ? this.grid.length - grid.length : 0;
         grid = grid || this.grid;
@@ -761,6 +921,11 @@ export class Excel {
         });
     }
 
+    /**
+     * Adds new rows to the grid, and renders it.
+     *
+     * @param numberOfRows          Number of new rows to add.
+     */
     addNewRows = (numberOfRows) => {
         const newRows = this.getNewRows(numberOfRows);
         this.grid = [...this.grid, ...newRows];
@@ -768,6 +933,9 @@ export class Excel {
         this.renderCells(newRows);
     }
 
+    /**
+     * Adds 26 new columns to the grid, and renders it.
+     */
     addNewColumns = () => {
         // TODO: FIX CELL JUMPING ISSUE !!
         if (!this.RUN_UNDER_DEVELOPMENT_FEATURES) return;
@@ -795,6 +963,9 @@ export class Excel {
         this.resetGrid(this.grid);
     }
 
+    /**
+     * Adds all the styles compiles it and renders the spreadsheet.
+     */
     render = () => {
         this.renderTable();
         this.tbody = this.tableContainer.querySelector('tbody');
