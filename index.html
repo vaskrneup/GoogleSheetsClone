@@ -6,10 +6,10 @@
 
     <title>Excel Clone</title>
 
-    <!--        <script defer src="https://use.fontawesome.com/releases/v5.15.2/js/all.js"-->
-    <!--                integrity="sha384-vuFJ2JiSdUpXLKGK+tDteQZBqNlMwAjhZ3TvPaDfN9QmbPb7Q8qUpbSNapQev3YF"-->
-    <!--                crossorigin="anonymous">-->
-    <!--        </script>-->
+    <script defer src="https://use.fontawesome.com/releases/v5.15.2/js/all.js"
+            integrity="sha384-vuFJ2JiSdUpXLKGK+tDteQZBqNlMwAjhZ3TvPaDfN9QmbPb7Q8qUpbSNapQev3YF"
+            crossorigin="anonymous">
+    </script>
 
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/layout.css">
@@ -49,9 +49,17 @@
             </div>
 
             <div class="navbar-right">
-                <button class="theme-button" id="save-data-in-csv-format-btn">SAVE AS CSV</button>
-                <button class="theme-button" id="save-data-btn">SAVE</button>
-                <input type="file" class="theme-button" id="upload-data-btn">
+                <button class="theme-button" id="save-data-in-csv-format-btn">
+                    <i class="fa fa-file-csv"></i>
+                    <i class="fa fa-file-download"></i>
+                </button>
+                <button class="theme-button" id="save-data-btn">
+                    <i class="fa fa-download"></i>
+                </button>
+
+                <label for="upload-data-btn" class="theme-button"><i class="fa fa-file-upload"></i></label>
+                <input type="file" id="upload-data-btn" style="display: none">
+
                 <button class="theme-button" id="help-btn">
                     <i class="fa fa-question"></i>
                 </button>
@@ -59,34 +67,41 @@
 
         </div>
 
-        <div class="navbar-between">
-            <label>
-                Background Color:
-                <input type="color" class="theme-input-field" value="#ffffff" id="background-color-picker">
-            </label>
-            <label>
-                Text Color:
-                <input type="color" class="theme-input-field" id="text-color-picker">
-            </label>
-            <label>
-                Font Size:
-                <input class="font-size-input theme-input-field" type="number" max="50" min="5" id="font-size-input"
-                       value="20">
-            </label>
+        <div class="navbar-between" style="overflow: hidden">
+            <div class="navbar-left">
+                <label>
+                    Background Color:
+                    <input type="color" class="theme-input-field" value="#ffffff" id="background-color-picker">
+                </label>
+                <label>
+                    Text Color:
+                    <input type="color" class="theme-input-field" id="text-color-picker">
+                </label>
+                <label>
+                    Font Size:
+                    <input class="font-size-input theme-input-field" type="number" max="50" min="5" id="font-size-input"
+                           value="20">
+                </label>
 
-            <label>
-                Font:
-                <select id="font-selector" class="font-selector theme-input-field"></select>
-            </label>
+                <label>
+                    Font:
+                    <select id="font-selector" class="font-selector theme-input-field"></select>
+                </label>
 
-            <button class="cell-style-change-btn theme-button" id="make-text-bold"><i class="fa fa-bold"></i></button>
-            <button class="cell-style-change-btn theme-button" id="make-text-italic"><i class="fa fa-italic"></i>
-            </button>
-            <button class="cell-style-change-btn theme-button" id="make-text-strikethrough"><i
-                    class="fa fa-strikethrough"></i>
-            </button>
+                <button class="cell-style-change-btn theme-button" id="make-text-bold"><i class="fa fa-bold"></i>
+                </button>
+                <button class="cell-style-change-btn theme-button" id="make-text-italic"><i class="fa fa-italic"></i>
+                </button>
+                <button class="cell-style-change-btn theme-button" id="make-text-strikethrough"><i
+                        class="fa fa-strikethrough"></i>
+                </button>
+            </div>
 
-            <button class="theme-button" id="plot-graph-btn">Plot Graph</button>
+            <div class="navbar-right">
+                <button class="theme-button" id="plot-graph-btn" style="text-align: right">
+                    <i class="fa fa-chart-line"></i>
+                </button>
+            </div>
         </div>
 
         <div class="navbar-bottom">

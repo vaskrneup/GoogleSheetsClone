@@ -59,12 +59,13 @@
 .navbar-right {
     float: right;
     overflow: hidden;
-    padding: 10px 5px;
+    padding: 3px 0;
 }
 
 .navbar-between {
     padding: 5px;
     border-bottom: 1px solid grey;
+    overflow: hidden;
 }
 
 .font-size-input {
@@ -76,7 +77,6 @@
 }
 
 .cell-style-change-btn {
-    background-color: transparent;
     border: none;
     outline: none;
     padding: 3px;
