@@ -812,7 +812,13 @@ export class Excel {
             if (i < 26) letter = this.LETTERS[j];
             else letter = String.fromCharCode(this.lastColumnCount) + this.LETTERS[j];
 
-            tHead += `<th class="disabled col" id="col-${i}">${letter}</th>`;
+            tHead += `
+            <th class="col">
+                <textarea rows="1" class="disabled center-text" disabled id="col-${i}" style="resize: horizontal; position: relative; top: 2px; font-size: 16px; color:black;">
+                    ${letter}
+                </textarea>
+            </th>
+            `;
             j++;
         }
         return tHead;
@@ -921,7 +927,7 @@ export class Excel {
 
                 td.addEventListener('click', () => {
                     this.isEditing = false;
-                    this.changeCell(j, i +startCountFrom);
+                    this.changeCell(j, i + startCountFrom);
                     this.showActiveCell();
                     this.focusCurrentCell();
                     this.isEditing = true;
