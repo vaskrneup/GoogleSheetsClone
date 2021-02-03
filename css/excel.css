@@ -10,11 +10,10 @@
 
 .active-cell {
     outline: 2px outset blue;
-    background-color: #f3f3f3;
     border-collapse: collapse;
 
     position: relative;
-    top: 2px;
+    top: 1px;
     left: 1px;
 }
 
@@ -31,11 +30,12 @@
 }
 
 .excel-row {
-    resize: vertical;
+    min-width: 50px;
+    height: 100%;
+    text-align: center;
     position: relative;
     top: 2px;
-    font-size: 16px;
-    color: black;
+    font-weight: bold;
 
-    width: 100%;
+    resize: vertical;
 }

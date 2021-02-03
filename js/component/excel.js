@@ -266,14 +266,22 @@ export class Excel {
      * Highlights currently active navbar in both x and y axis.
      */
     showActiveNavbar = () => {
-        document.getElementById('col-' + this.activeXAxis).classList.add('active-excel-navbar');
-        document.getElementById('row-' + this.activeYAxis).classList.add('active-excel-navbar');
+        const activeCol = document.getElementById('col-' + this.activeXAxis);
+        const activeRow = document.getElementById('row-' + this.activeYAxis);
+        activeCol.classList.add('active-excel-navbar');
+        activeCol.parentElement.classList.add('active-excel-navbar');
+        activeRow.classList.add('active-excel-navbar');
+        activeRow.parentElement.classList.add('active-excel-navbar');
 
         if (this.lastActiveXAxis !== this.activeXAxis) {
-            document.getElementById('col-' + this.lastActiveXAxis).classList.remove('active-excel-navbar');
+            const col = document.getElementById('col-' + this.lastActiveXAxis);
+            col.classList.remove('active-excel-navbar');
+            col.parentElement.classList.remove('active-excel-navbar');
         }
         if (this.lastActiveYAxis !== this.activeYAxis) {
-            document.getElementById('row-' + this.lastActiveYAxis).classList.remove('active-excel-navbar');
+            const row = document.getElementById('row-' + this.lastActiveYAxis);
+            row.classList.remove('active-excel-navbar');
+            row.parentElement.classList.remove('active-excel-navbar');
         }
     }
     // END CELL NAVBAR RELATED !!
@@ -293,8 +301,9 @@ export class Excel {
      * Highlights active cell and removes highlight from last cell.
      */
     showActiveCell = () => {
-        this.lastCell.cell.classList.remove('active-cell');
-        this.activeCell.cell.classList.add('active-cell');
+        // console.log(this.lastCell.cell.parentElement.classList)
+        this.lastCell.cell.parentElement.classList.remove('active-cell');
+        this.activeCell.cell.parentElement.classList.add('active-cell');
     }
 
     /**
@@ -919,7 +928,11 @@ export class Excel {
 
         grid.forEach((row, i) => {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td class="disabled center-text table-row" id="row-${i + startCountFrom}">${i + 1 + startCountFrom}</td>`;
+            tr.innerHTML = `
+                <td class="disabled center-text table-row">
+                    <textarea disabled id="row-${i + startCountFrom}" rows="1" class="disabled center-text excel-row">${i + 1 + startCountFrom}</textarea>
+                </td>
+            `;
 
             row.forEach((cell, j) => {
                 const td = document.createElement('td');
