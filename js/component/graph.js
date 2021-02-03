@@ -170,7 +170,7 @@ export class DotGraph extends Graph {
         super(xValues, yValues, xAxisLabel, yAxisLabel, width, height, padding);
 
         this.dotSize = dotSize;
-        this.modal = new Modal();
+        this.modal = new Modal({padding: '0'});
     }
 
     /**
@@ -225,7 +225,7 @@ export class LineGraph extends Graph {
         super(xValues, yValues, xAxisLabel, yAxisLabel, width, height, padding);
 
         this.lineSize = lineSize;
-        this.modal = new Modal();
+        this.modal = new Modal({padding: '0'});
     }
 
     /**
