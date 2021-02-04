@@ -154,6 +154,7 @@ const handleLoadDataFromFile = (e) => {
         excel.resetGrid(data);
         documentNameDOM.value = spreadsheetJsonData.name;
         document.title = spreadsheetJsonData.name;
+        changeInputSizeOnInput({target: documentNameDOM})
     });
 }
 
@@ -175,6 +176,7 @@ const handleEvents = () => {
         if (!documentNameDOM.value) documentNameDOM.value = 'Untitled Document';
         changeInputSizeOnInput({target: documentNameDOM});
         document.title = documentNameDOM.value;
+        changeInputSizeOnInput({target: documentNameDOM})
     });
     documentNameDOM.addEventListener('keydown', (e) => {
         if (e.code === 'Enter') documentNameDOM.blur();
@@ -194,6 +196,7 @@ const main = () => {
     excel.render();
     handleEvents();
     document.title = documentNameDOM.value;
+    changeInputSizeOnInput({target: documentNameDOM})
 }
 
 main();
