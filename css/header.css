@@ -91,6 +91,10 @@
     cursor: pointer;
 }
 
+.cell-style-change-btn-active {
+    background-color: black;
+}
+
 .navbar-bottom {
     padding: 5px;
 }

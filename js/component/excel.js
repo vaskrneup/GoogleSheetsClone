@@ -335,6 +335,20 @@ export class Excel {
     }
 
     /**
+     * Updates text styles controls value with the value of current cell.
+     */
+    updateStylesBar = () => {
+        this.backgroundColorPicker.value = this.activeCell.styles.backgroundColor || '#ffffff';
+        this.textColorPicker.value = this.activeCell.styles.color || '#000000';
+        this.fontSizeInput.value = this.activeCell.styles.fontSize.replace('px', '') || '16';
+        this.fontSelector.value = this.activeCell.styles.fontFamily || this.AVAILABLE_FONTS[0].value;
+
+        this.activeCell.styles.fontWeight === 'bold' ? this.boldBtn.classList.add('cell-style-change-btn-active') : this.boldBtn.classList.remove('cell-style-change-btn-active');
+        this.activeCell.styles.fontStyle === 'italic' ? this.italicBtn.classList.add('cell-style-change-btn-active') : this.italicBtn.classList.remove('cell-style-change-btn-active');
+        this.activeCell.styles.textDecoration === 'line-through' ? this.crossedFontBtn.classList.add('cell-style-change-btn-active') : this.crossedFontBtn.classList.remove('cell-style-change-btn-active');
+    }
+
+    /**
      * Changes currently active cell.
      *
      * @param {number} newX         Active cell x axis.
@@ -358,6 +372,7 @@ export class Excel {
                 this.updateFormulaBar();
                 this.updateNumberOfRows();
                 this.updateNumberOfColumns();
+                this.updateStylesBar();
             }
         }
     }
@@ -420,6 +435,7 @@ export class Excel {
             fontStyle: this.activeCell.styles.fontStyle === 'italic' ? 'normal' : 'italic',
         });
         this.activeCell.compileStyles();
+        this.activeCell.styles.fontStyle === 'italic' ? this.italicBtn.classList.add('cell-style-change-btn-active') : this.italicBtn.classList.remove('cell-style-change-btn-active');
     }
 
     /**
@@ -430,6 +446,7 @@ export class Excel {
             fontWeight: this.activeCell.styles.fontWeight === 'bold' ? 'normal' : 'bold',
         });
         this.activeCell.compileStyles();
+        this.activeCell.styles.fontWeight === 'bold' ? this.boldBtn.classList.add('cell-style-change-btn-active') : this.boldBtn.classList.remove('cell-style-change-btn-active');
     }
 
     /**
@@ -440,6 +457,7 @@ export class Excel {
             textDecoration: this.activeCell.styles.textDecoration === 'line-through' ? 'none' : 'line-through',
         });
         this.activeCell.compileStyles();
+        this.activeCell.styles.textDecoration === 'line-through' ? this.crossedFontBtn.classList.add('cell-style-change-btn-active') : this.crossedFontBtn.classList.remove('cell-style-change-btn-active');
     }
 
     /**
