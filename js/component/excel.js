@@ -6,8 +6,6 @@ import {Modal} from "./modal.js";
 export class Excel {
     RUN_UNDER_DEVELOPMENT_FEATURES = false;
 
-    ERROR_RECURSION = '#ERROR_RECURSION';
-
     NUMBER_OF_NEW_ROWS_TO_APPEND = 10;
     LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     ALLOWED_FORMULA = ['=SUM(', '=AVERAGE(', '=COUNT(', '=MIN(', '=MAX(', '=FILTER_ONLY_STRING(', '=FILTER_ONLY_NUM('];
@@ -773,6 +771,23 @@ export class Excel {
         });
     }
 
+
+    /*
+    * Adds events to newly created cells.
+    *
+    * @param {Cell} cell        New cell object.
+    * */
+    addEventListenersToNewCells = (cell) => {
+        cell.cell.addEventListener('change', (e) => {
+            this.handleFormulaUsage(e);
+            this.handleUpdateDependentCell(e);
+        });
+        cell.cell.addEventListener('lastCellUpdated', (e) => {
+            this.handleFormulaUsage(e);
+            this.handleUpdateDependentCell(e);
+        });
+    }
+
     /**
      * Adds event listeners, is used internally.
      */
@@ -851,14 +866,7 @@ export class Excel {
 
             for (let colCount = 0; colCount < this.numberOfColumns; colCount++) {
                 const cell = new Cell(colCount, this.grid.length + rowCount);
-                cell.cell.addEventListener('change', (e) => {
-                    this.handleFormulaUsage(e);
-                    this.handleUpdateDependentCell(e);
-                });
-                cell.cell.addEventListener('lastCellUpdated', (e) => {
-                    this.handleFormulaUsage(e);
-                    this.handleUpdateDependentCell(e);
-                });
+                this.addEventListenersToNewCells(cell);
                 row.push(cell);
             }
 
@@ -890,6 +898,7 @@ export class Excel {
         this.grid.forEach(row => {
             row.forEach(cell => {
                 cell.cell.value = cell.value;
+                this.addEventListenersToNewCells(cell);
             });
         });
     }

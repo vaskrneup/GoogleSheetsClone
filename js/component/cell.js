@@ -44,7 +44,9 @@ export class Cell extends BaseComponent {
             value: this.value,
             formula: this.formula,
 
-            styles: this.styles
+            styles: this.styles,
+
+            dependentCells: this.dependentCells
         };
     }
 
@@ -168,5 +170,6 @@ export const createCellFromJson = (data) => {
     const cell = new Cell(data.xAxis, data.yAxis, data.styles);
     cell.value = data.value;
     cell.formula = data.formula;
+    cell.dependentCells = data.dependentCells;
     return cell;
 }
