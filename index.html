@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='Spreadsheet Icon' type='image/x-icon' href='./favicon.ico'/>
 
     <title>Excel Clone</title>
 
@@ -49,18 +50,20 @@
             </div>
 
             <div class="navbar-right">
-                <button class="theme-button" id="save-data-in-csv-format-btn">
+                <button class="theme-button" id="save-data-in-csv-format-btn" title="Download As CSV">
                     <i class="fa fa-file-csv"></i>
                     <i class="fa fa-file-download"></i>
                 </button>
-                <button class="theme-button" id="save-data-btn">
+                <button class="theme-button" id="save-data-btn" title="Download Raw Data">
                     <i class="fa fa-download"></i>
                 </button>
 
-                <label for="upload-data-btn" class="theme-button"><i class="fa fa-file-upload"></i></label>
+                <label for="upload-data-btn" class="theme-button" title="Upload Raw Data">
+                    <i class="fa fa-file-upload"></i>
+                </label>
                 <input type="file" id="upload-data-btn" style="display: none" accept=".json">
 
-                <button class="theme-button" id="help-btn">
+                <button class="theme-button" id="help-btn" style="margin: 0 2px" title="Help">
                     <i class="fa fa-question"></i>
                 </button>
             </div>
@@ -80,25 +83,28 @@
                 <label>
                     Font Size:
                     <input class="font-size-input theme-input-field" type="number" max="50" min="5" id="font-size-input"
-                           value="16">
+                           value="16" title="Select Font Size">
                 </label>
 
                 <label>
                     Font:
-                    <select id="font-selector" class="font-selector theme-input-field"></select>
+                    <select id="font-selector" class="font-selector theme-input-field" title="Select Font"></select>
                 </label>
 
-                <button class="cell-style-change-btn theme-button" id="make-text-bold"><i class="fa fa-bold"></i>
+                <button class="cell-style-change-btn theme-button" id="make-text-bold" title="Make Text Bold">
+                    <i class="fa fa-bold"></i>
                 </button>
-                <button class="cell-style-change-btn theme-button" id="make-text-italic"><i class="fa fa-italic"></i>
+                <button class="cell-style-change-btn theme-button" id="make-text-italic" title="Make Text Italic">
+                    <i class="fa fa-italic"></i>
                 </button>
-                <button class="cell-style-change-btn theme-button" id="make-text-strikethrough"><i
-                        class="fa fa-strikethrough"></i>
+                <button class="cell-style-change-btn theme-button" id="make-text-strikethrough"
+                        title="Make Crossed Text">
+                    <i class="fa fa-strikethrough"></i>
                 </button>
             </div>
 
             <div class="navbar-right">
-                <button class="theme-button" id="plot-graph-btn" style="text-align: right">
+                <button class="theme-button" id="plot-graph-btn" style="text-align: right" title="Create Graph">
                     <i class="fa fa-chart-line"></i>
                 </button>
             </div>

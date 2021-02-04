@@ -153,6 +153,7 @@ const handleLoadDataFromFile = (e) => {
 
         excel.resetGrid(data);
         documentNameDOM.value = spreadsheetJsonData.name;
+        document.title = spreadsheetJsonData.name;
     });
 }
 
@@ -160,7 +161,10 @@ const handleLoadDataFromFile = (e) => {
  * Handles events that is not related to spreadsheet.
  */
 const handleEvents = () => {
-    documentNameDOM.addEventListener('input', changeInputSizeOnInput);
+    documentNameDOM.addEventListener('input', (e) => {
+        changeInputSizeOnInput(e);
+        document.title = e.target.value;
+    });
     documentNameDOM.addEventListener('focusin', () => {
         excel.isEditing = true
         excel.isWorkingInExternalInput = true;
@@ -170,6 +174,7 @@ const handleEvents = () => {
         excel.isWorkingInExternalInput = false;
         if (!documentNameDOM.value) documentNameDOM.value = 'Untitled Document';
         changeInputSizeOnInput({target: documentNameDOM});
+        document.title = documentNameDOM.value;
     });
     documentNameDOM.addEventListener('keydown', (e) => {
         if (e.code === 'Enter') documentNameDOM.blur();
@@ -188,6 +193,7 @@ const handleEvents = () => {
 const main = () => {
     excel.render();
     handleEvents();
+    document.title = documentNameDOM.value;
 }
 
 main();
