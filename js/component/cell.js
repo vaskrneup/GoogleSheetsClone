@@ -104,6 +104,7 @@ export class Cell extends BaseComponent {
      * */
     compileStyles = () => {
         Object.keys(this.styles).forEach(style => {
+            this.cell.parentNode['style'][style] = this.styles[style];
             this.cell.style[style] = this.styles[style];
         });
     }

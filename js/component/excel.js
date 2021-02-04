@@ -984,8 +984,8 @@ export class Excel {
 
                 tr.appendChild(td);
 
-                cell.render();
                 td.appendChild(cell.cell);
+                cell.render();
                 this.tbody.appendChild(tr);
             });
         });
