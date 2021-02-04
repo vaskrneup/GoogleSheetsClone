@@ -567,8 +567,16 @@ export class Excel {
     handleFormulaUsage = (e) => {
         let isPreDefinedFormula = false;
 
-        this.ALLOWED_FORMULA.forEach(formulaFor => {
+        // this.ALLOWED_FORMULA.forEach(formulaFor => {
+        for (let i=0; i<this.ALLOWED_FORMULA.length; i++) {
+            const formulaFor = this.ALLOWED_FORMULA[i];
+
             if (e.target.value.includes(formulaFor)) {
+                if (e.target.value.toUpperCase().includes(this.LETTERS[this.activeXAxis] + (this.activeYAxis))) {
+                    e.target.value = '#ERROR_RECURSION';
+                    return;
+                }
+
                 isPreDefinedFormula = true;
 
                 if (formulaFor === '=FILTER_ONLY_NUM(') {
@@ -634,7 +642,7 @@ export class Excel {
                     this.lastCell.cell.dispatchEvent(lastCellUpdatedEvent);
                 }
             }
-        });
+        }
 
         if (!isPreDefinedFormula) this.handleCustomFormulaUsage(e);
     }
@@ -715,11 +723,6 @@ export class Excel {
             this.lastCell = cell;
 
             this.handleFormulaUsage({
-                target: {
-                    value: cell.formula
-                }
-            });
-            this.handleCustomFormulaUsage({
                 target: {
                     value: cell.formula
                 }
@@ -848,6 +851,10 @@ export class Excel {
             for (let colCount = 0; colCount < this.numberOfColumns; colCount++) {
                 const cell = new Cell(colCount, this.grid.length + rowCount);
                 cell.cell.addEventListener('change', (e) => {
+                    this.handleFormulaUsage(e);
+                    this.handleUpdateDependentCell(e);
+                });
+                cell.cell.addEventListener('lastCellUpdated', (e) => {
                     this.handleFormulaUsage(e);
                     this.handleUpdateDependentCell(e);
                 });
