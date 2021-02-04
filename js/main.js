@@ -2,6 +2,14 @@ import {downloadData, readFile} from "./utils/DOM.js";
 import {Excel, getGridFromJson} from "./component/excel.js";
 import {Modal} from "./component/modal.js";
 
+let excel = new Excel(
+    100, 26, 'excel-table',
+    'background-color-picker', 'text-color-picker', 'font-size-input',
+    'make-text-bold', 'make-text-italic', 'make-text-strikethrough',
+    'current-cell', 'formula-input', 'font-selector', 'plot-graph-btn'
+);
+const helpSectionModal = new Modal({});
+
 // HTML CODE !!
 const helpSectionHTML = `
     <h2 class="help-modal-header center-text">HELP</h2>
@@ -54,6 +62,12 @@ const helpSectionHTML = `
                         <span class="italic">#Gives Maximum Number in given cells.</span>
                     </li>
                 </ul>
+                <br>
+                <h2 class="theme-emphasis sub-header">FORMULA ERRORS</h2>
+                <p>
+                    \`<span class="theme-emphasis">RECURSION</span>\`
+                    The value of same cell where formula is used is ignored to prevent recursion.
+                </p>
             </div>
         </div>
 
@@ -98,13 +112,6 @@ const uploadDataDOM = document.getElementById('upload-data-btn');
 const htmlBtn = document.getElementById('help-btn');
 // END Selectors !!
 
-let excel = new Excel(
-    100, 26, 'excel-table',
-    'background-color-picker', 'text-color-picker', 'font-size-input',
-    'make-text-bold', 'make-text-italic', 'make-text-strikethrough',
-    'current-cell', 'formula-input', 'font-selector', 'plot-graph-btn'
-);
-const helpSectionModal = new Modal({});
 helpSectionModal.addModelBody(helpSectionHTML, true);
 
 /**

@@ -6,6 +6,8 @@ import {Modal} from "./modal.js";
 export class Excel {
     RUN_UNDER_DEVELOPMENT_FEATURES = false;
 
+    ERROR_RECURSION = '#ERROR_RECURSION';
+
     NUMBER_OF_NEW_ROWS_TO_APPEND = 10;
     LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     ALLOWED_FORMULA = ['=SUM(', '=AVERAGE(', '=COUNT(', '=MIN(', '=MAX(', '=FILTER_ONLY_STRING(', '=FILTER_ONLY_NUM('];
@@ -535,7 +537,9 @@ export class Excel {
 
         try {
             const parsedData = this.getCellValuesFromRange('=SUM(' + rawCells.join(',') + ')', true, '=SUM(', (cell) => {
-                cell.addDependentCell({y: this.lastCell.yAxis, x: this.lastCell.xAxis});
+                if (!((cell.xAxis === this.lastCell.xAxis) && (cell.yAxis === this.lastCell.yAxis))) {
+                    cell.addDependentCell({y: this.lastCell.yAxis, x: this.lastCell.xAxis});
+                }
             });
 
             if (cells.length === parsedData.length) {
@@ -568,15 +572,10 @@ export class Excel {
         let isPreDefinedFormula = false;
 
         // this.ALLOWED_FORMULA.forEach(formulaFor => {
-        for (let i=0; i<this.ALLOWED_FORMULA.length; i++) {
+        for (let i = 0; i < this.ALLOWED_FORMULA.length; i++) {
             const formulaFor = this.ALLOWED_FORMULA[i];
 
             if (e.target.value.includes(formulaFor)) {
-                if (e.target.value.toUpperCase().includes(this.LETTERS[this.activeXAxis] + (this.activeYAxis))) {
-                    e.target.value = '#ERROR_RECURSION';
-                    return;
-                }
-
                 isPreDefinedFormula = true;
 
                 if (formulaFor === '=FILTER_ONLY_NUM(') {
@@ -602,7 +601,9 @@ export class Excel {
                 }
 
                 const parsedData = this.getCellValuesFromRange(e.target.value, true, formulaFor, (cell) => {
-                    cell.addDependentCell({y: this.lastCell.yAxis, x: this.lastCell.xAxis});
+                    if (!((cell.xAxis === this.lastCell.xAxis) && (cell.yAxis === this.lastCell.yAxis))) {
+                        cell.addDependentCell({y: this.lastCell.yAxis, x: this.lastCell.xAxis});
+                    }
                 });
 
                 let output = 0;
