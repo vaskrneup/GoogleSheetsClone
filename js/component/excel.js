@@ -971,7 +971,8 @@ export class Excel {
 
             row.forEach((cell, j) => {
                 const td = document.createElement('td');
-                td.style.verticalAlign = 'top';
+                td.style.verticalAlign = 'bottom';
+                td.style.cursor = 'text';
 
                 td.addEventListener('click', () => {
                     this.isEditing = false;
